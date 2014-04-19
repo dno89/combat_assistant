@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>refresh.png</file>
+        <file>fighter.png</file>
+        <file>DOWN.png</file>
+        <file>UP.png</file>
+        <file>DELETE.png</file>
+        <file>add.png</file>
+        <file>skull.png</file>
+        <file>paper.jpg</file>
+        <file>paper2.jpg</file>
+    </qresource>
+</RCC>
