@@ -30,7 +30,7 @@ struct BaseEntry {
     int initiative; //the initiative value
     QString name;   //the displayed name
     std::vector<Annotation> annotations;    //the annotations
-    QString ico;    //the icon
+    QString ico = ":/res/ico/fighter";    //the icon
 
     //////////////////////////////////////////////
     /// FUNCTIONS
@@ -55,6 +55,10 @@ struct BaseEntry {
  * @brief Entry with hp information
  */
 struct HPEntry : public BaseEntry {
+    HPEntry() {
+        ico = ":/res/ico/cnpc";
+    }
+    //DATA
     int total_hp; //the total amount of HP
     int remaining_hp; //the remaining HP
 
@@ -65,6 +69,9 @@ struct HPEntry : public BaseEntry {
  * @brief A complete monster entry
  */
 struct MonsterEntry : public HPEntry {
+    MonsterEntry() {
+        ico = ":/res/ico/monster";
+    }
 ///TODO
     ~MonsterEntry() {}
 };
@@ -73,6 +80,9 @@ struct MonsterEntry : public HPEntry {
  * @brief A complete npc entry
  */
 struct NPCEntry : public HPEntry {
+    NPCEntry() {
+        ico = ":/res/ico/npc";
+    }
 ///TODO
     ~NPCEntry() {}
 };

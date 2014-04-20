@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#cw {background-image: url(:/res/back/paper)}</string>
+  </property>
   <widget class="QWidget" name="cw">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -36,7 +39,9 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">QWidget#cw {background-image: url(:/new/icons/res/paper.jpg)}</string>
+    <string notr="true">QWidget#cw {
+	background-image: url(:/res/back/paper)
+}</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -189,7 +194,7 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/res/back/paper)</string>
+         <string notr="true">background-image: url(:/res/back/paper2)</string>
         </property>
         <property name="tabStopWidth">
          <number>40</number>

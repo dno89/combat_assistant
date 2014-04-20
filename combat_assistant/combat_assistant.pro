@@ -28,7 +28,8 @@ FORMS    += mainwindow.ui \
 
 QMAKE_CXXFLAGS += -std=c++0x
 
-LIBS += -llua5.2
+LIBS += -llua5.2 \
+		-lboost_regex
 
 INCLUDEPATH += /usr/include/lua5.2/
 

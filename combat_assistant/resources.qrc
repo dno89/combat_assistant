@@ -9,5 +9,8 @@
         <file alias="/ico/skull">res/ico/skull.png</file>
         <file alias="/back/paper">res/back/paper.jpg</file>
         <file alias="/back/paper2">res/back/paper2.jpg</file>
+        <file alias="/ico/monster">res/ico/monster-devil.jpg</file>
+        <file alias="/ico/cnpc">res/ico/cnpc.jpg</file>
+        <file alias="/ico/npc">res/ico/npc.jpg</file>
     </qresource>
 </RCC>

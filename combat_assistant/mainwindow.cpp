@@ -17,8 +17,10 @@
 ///other forms
 #include <pcinsert.h>
 #include <npcinsert.h>
+///boost
+#include <boost/regex.hpp>
 
-///TEMPORARY HARD CONF
+//HARD CONF
 static const char* conf_file = "conf.lua";
 
 using namespace std;
@@ -26,6 +28,12 @@ using namespace std;
 //global
 static std::default_random_engine eng(time(NULL));
 static std::uniform_int_distribution<short> d20(1, 20);
+
+//global functions
+std::string processHP(const std::string& str) {
+        boost::regex r("([[:digit:]]+)d([[:digit:]]+)");
+        return regex_replace(str, r, "d(\\2, \\1)");
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
