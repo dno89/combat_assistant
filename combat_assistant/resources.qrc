@@ -1,13 +1,13 @@
 <RCC>
-    <qresource prefix="/icons">
-        <file>refresh.png</file>
-        <file>fighter.png</file>
-        <file>DOWN.png</file>
-        <file>UP.png</file>
-        <file>DELETE.png</file>
-        <file>add.png</file>
-        <file>skull.png</file>
-        <file>paper.jpg</file>
-        <file>paper2.jpg</file>
+    <qresource prefix="/res">
+        <file alias="ico/refresh">res/ico/refresh.png</file>
+        <file alias="ico/fighter">res/ico/fighter.png</file>
+        <file alias="/ico/down">res/ico/DOWN.png</file>
+        <file alias="/ico/up">res/ico/UP.png</file>
+        <file alias="/ico/delete">res/ico/DELETE.png</file>
+        <file alias="/ico/add">res/ico/add.png</file>
+        <file alias="/ico/skull">res/ico/skull.png</file>
+        <file alias="/back/paper">res/back/paper.jpg</file>
+        <file alias="/back/paper2">res/back/paper2.jpg</file>
     </qresource>
 </RCC>

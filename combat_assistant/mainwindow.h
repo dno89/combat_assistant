@@ -142,8 +142,6 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_actionRefresh_Templates_triggered();
-
     void on_pbUp_clicked();
 
     void on_pbUp_2_clicked();
@@ -168,6 +166,8 @@ private slots:
     void on_actionAdd_NPC_triggered();
 
     void on_lvCharacters_doubleClicked(const QModelIndex &index);
+
+    void on_actionAdd_Custom_NPC_triggered();
 
 public slots:
     void lvCharacters_currentChanged(const QModelIndex &cur, const QModelIndex &prev);
@@ -194,7 +194,9 @@ private:
 
     //insert windows
     npcinsert m_npcinsert_win;
-    //PCInsert m_pcinsert_win;
+
+    ///configurations
+    std::string m_base_script;
 
     ///my functions
     //generate unique name
@@ -205,6 +207,7 @@ private:
     void ChangePF(int val);
     void DisplayDescription(const QString& uname);
     QString DescribeEntry(const QString& uname) const;
+    void readConf();
 };
 
 #endif // MAINWINDOW_H

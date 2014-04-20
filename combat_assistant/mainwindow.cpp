@@ -13,14 +13,15 @@
 #include <cstring>
 #include <iomanip>
 #include <random>
+#include <memory>
 ///other forms
 #include <pcinsert.h>
 #include <npcinsert.h>
 
 ///TEMPORARY HARD CONF
-static const char* template_folder = "templates/";
-static const char* base_script = "base.lua";
-static const char* npc_table_script = "npc_table.lua";
+static const char* conf_file = "conf.lua";
+
+using namespace std;
 
 //global
 static std::default_random_engine eng(time(NULL));
@@ -38,9 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
     m_L = luaL_newstate();
     //open the standard libraries
     luaL_openlibs(m_L);
+
+    //read the configuration file
+    readConf();
+
     //open the base script
-    if(luaL_loadfile(m_L, base_script) || lua_pcall(m_L, 0, 0, 0)) {
-        std::cerr << "Error while loading/executing the base script: " << base_script << std::endl;
+    if(luaL_loadfile(m_L, m_base_script.c_str()) || lua_pcall(m_L, 0, 0, 0)) {
+        std::cerr << "Error while loading/executing the base script: " << m_base_script << std::endl;
         std::cerr << lua_tostring(m_L, -1) << std::endl;
         exit(1);
     }
@@ -62,6 +67,19 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->lvCharacters, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(ShowMenu(const QPoint&)));
 
     m_currentIndex = 0;
+}
+
+void MainWindow::readConf() {
+    if(luaL_loadfile(m_L, conf_file) || lua_pcall(m_L, 0, 0, 0)) {
+        std::cerr << "Error while loading/executing the configuration script: " << conf_file << std::endl;
+        std::cerr << lua_tostring(m_L, -1) << std::endl;
+        exit(1);
+    }
+
+    //read the base script location
+    lua_getglobal(m_L, "base_script");
+    assert(lua_isstring(m_L, -1));
+    m_base_script = lua_tostring(m_L, -1);
 }
 
 MainWindow::~MainWindow()
@@ -323,9 +341,14 @@ QString MainWindow::DescribeEntry(const QString& uname) const {
     Monster_PtrType monster;
     NPC_PtrType npc;
 
-    if(cnpc = dynamic_pointer_cast<CustomNPC_PtrType>(baseentry)) {
-    } else if(monster = dynamic_pointer_cast<Monster_PtrType>(baseentry)) {
-    } else if(npc = dynamic_pointer_cast<Monster_PtrType>(baseentry)) {
+    if(npc = dynamic_pointer_cast<NPC>(baseentry)) {
+        //NPC
+    } else if(monster = dynamic_pointer_cast<Monster>(baseentry)) {
+        //Monster
+    } else if(cnpc = dynamic_pointer_cast<CustomNPC>(baseentry)) {
+        //custom NPC
+    } else {
+        //PC
     }
 
 //    if(m_template_table.count(uname)) {
@@ -428,17 +451,17 @@ void MainWindow::on_actionAdd_PC_triggered()
     //releaseKeyboard();
     if(win.exec() != QDialog::Rejected) {
 
-        std::string name = win.GetName();
+        QString name = win.GetName();
         int init = win.GetInitiative();
 
         name = generateUName(name);
-        character new_pc;
+        PC_PtrType new_pc = make_shared<PC>();
         //set the name and the initiative
-        new_pc.NAME = name;
-        new_pc.INIZ_val = init;
+        new_pc->name = name;
+        new_pc->initiative = init;
 
         //add it to the table
-        m_pc_table[name] = new_pc;
+        m_entry_lut[name] = new_pc;
 
         //add an initiative entry
         m_initiative.AddInitiativeEntry(name);
@@ -485,18 +508,14 @@ void MainWindow::change_pf() {
 
 void MainWindow::ChangePF(int val) {
     int index = ui->lvCharacters->currentIndex().row();
-    std::string uname = m_initiative.GetUName(index);
+    QString uname = m_initiative.GetUName(index);
 
-    if(m_template_table.count(uname)) {
-        m_template_table[uname].remaining_PF += val;
+    HPEntry_PtrType hpp = dynamic_pointer_cast<HPEntry>(m_entry_lut[uname]);
 
-        lvCharacters_currentChanged(m_initiative.index(index), m_initiative.index(index));
-    } else if(m_npc_table.count(uname)) {
-        m_npc_table[uname].remaining_PF += val;
+    if(hpp) {
+        hpp->remaining_hp += val;
         lvCharacters_currentChanged(m_initiative.index(index), m_initiative.index(index));
     }
-
-    //std::cerr << "change_pf called with value: " << val << std::endl;
 }
 
 void MainWindow::on_lwDead_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
@@ -510,11 +529,21 @@ void MainWindow::on_lwDead_clicked(const QModelIndex &index)
 }
 
 void MainWindow::on_actionAdd_NPC_triggered() {
+
+}
+
+void MainWindow::on_lvCharacters_doubleClicked(const QModelIndex &index)
+{
+    m_currentIndex = index.row();
+}
+
+void MainWindow::on_actionAdd_Custom_NPC_triggered()
+{
     //std::cerr << "Add triggered" << std::endl;
     //releaseKeyboard();
     if(m_npcinsert_win.exec() != QDialog::Rejected) {
 
-        std::string name = m_npcinsert_win.GetUName();
+        QString name = m_npcinsert_win.GetUName();
         name = generateUName(name);
 
         int init = m_npcinsert_win.GetIni();
@@ -543,29 +572,23 @@ void MainWindow::on_actionAdd_NPC_triggered() {
             lua_setglobal(m_L, "NPC_PF");
         }
 
-
-        npc new_npc;
+        CustomNPC_PtrType cnpc = make_shared<CustomNPC>();
         //set the name and the initiative
-        new_npc.NAME = name;
-        new_npc.INIZ_val = init;
-        new_npc.PF = PF;
-        new_npc.remaining_PF = PF;
+        cnpc->name = name;
+        cnpc->initiative = init;
+        cnpc->total_hp = PF;
+        cnpc->remaining_hp = PF;
 
         //add it to the table
-        m_npc_table[name] = new_npc;
+        m_entry_lut[name] = static_pointer_cast<BaseEntry>(cnpc);
 
         //add an initiative entry
         m_initiative.AddInitiativeEntry(name);
 
         //std::cerr << name << " " << init << std::endl;
     }
+
     m_npcinsert_win.hide();
     //m_npcinsert_win.close();
-
     //grabKeyboard();
-}
-
-void MainWindow::on_lvCharacters_doubleClicked(const QModelIndex &index)
-{
-    m_currentIndex = index.row();
 }

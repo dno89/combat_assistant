@@ -26,7 +26,7 @@ FORMS    += mainwindow.ui \
 			 pcinsert.ui \
 			 npcinsert.ui
 
-			 QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -llua5.2
 

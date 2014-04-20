@@ -15,7 +15,7 @@ public:
     explicit npcinsert(QWidget *parent = 0);
     ~npcinsert();
 
-    std::string GetUName() const;
+    QString GetUName() const;
     int GetIni() const;
     std::string GetPF() const;
     bool GetRD20() const;

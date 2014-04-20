@@ -13,8 +13,8 @@ PCInsert::~PCInsert()
     delete ui;
 }
 
-std::string PCInsert::GetName() const {
-    return ui->teName->toPlainText().toLocal8Bit().data();
+QString PCInsert::GetName() const {
+    return ui->teName->toPlainText();
 }
 
 int PCInsert::GetInitiative() const {

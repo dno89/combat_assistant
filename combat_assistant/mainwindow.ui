@@ -121,7 +121,7 @@
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
-             <normaloff>:/new/icons/res/UP.png</normaloff>:/new/icons/res/UP.png</iconset>
+             <normaloff>:/res/ico/up</normaloff>:/res/ico/up</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -144,7 +144,7 @@
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
-             <normaloff>:/new/icons/res/DELETE.png</normaloff>:/new/icons/res/DELETE.png</iconset>
+             <normaloff>:/res/ico/delete</normaloff>:/res/ico/delete</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -164,7 +164,7 @@
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
-             <normaloff>:/new/icons/res/DOWN.png</normaloff>:/new/icons/res/DOWN.png</iconset>
+             <normaloff>:/res/ico/down</normaloff>:/res/ico/down</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -189,7 +189,7 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/new/icons/res/paper2.jpg)</string>
+         <string notr="true">background-image: url(:/res/back/paper)</string>
         </property>
         <property name="tabStopWidth">
          <number>40</number>
@@ -215,7 +215,7 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">image: url(:/new/icons/res/skull.png);
+         <string notr="true">image: url(:/res/ico/skull);
 background-color: rgba(255, 255, 255, 0)</string>
         </property>
         <property name="text">
@@ -279,6 +279,7 @@ background-color: rgba(255, 255, 255, 0)</string>
     <bool>false</bool>
    </attribute>
    <addaction name="actionAdd_PC"/>
+   <addaction name="actionAdd_Custom_NPC"/>
    <addaction name="actionAdd_NPC"/>
    <addaction name="actionAdd_Monster"/>
   </widget>
@@ -286,7 +287,7 @@ background-color: rgba(255, 255, 255, 0)</string>
   <action name="actionAdd_Monster">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/new/icons/res/add.png</normaloff>:/new/icons/res/add.png</iconset>
+     <normaloff>:/res/ico/add</normaloff>:/res/ico/add</iconset>
    </property>
    <property name="text">
     <string>Add Monster</string>
@@ -298,7 +299,7 @@ background-color: rgba(255, 255, 255, 0)</string>
   <action name="actionAdd_PC">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/new/icons/res/add.png</normaloff>:/new/icons/res/add.png</iconset>
+     <normaloff>:/res/ico/add</normaloff>:/res/ico/add</iconset>
    </property>
    <property name="text">
     <string>Add PC</string>
@@ -310,10 +311,19 @@ background-color: rgba(255, 255, 255, 0)</string>
   <action name="actionAdd_NPC">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/new/icons/res/add.png</normaloff>:/new/icons/res/add.png</iconset>
+     <normaloff>:/res/ico/add</normaloff>:/res/ico/add</iconset>
    </property>
    <property name="text">
     <string>Add NPC</string>
+   </property>
+  </action>
+  <action name="actionAdd_Custom_NPC">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/res/ico/add</normaloff>:/res/ico/add</iconset>
+   </property>
+   <property name="text">
+    <string>Add Custom NPC</string>
    </property>
   </action>
  </widget>

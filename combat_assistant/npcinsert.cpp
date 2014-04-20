@@ -13,7 +13,7 @@ npcinsert::~npcinsert()
     delete ui;
 }
 
-std::string npcinsert::GetUName() const {
+QString npcinsert::GetUName() const {
     return ui->teName->toPlainText().toLocal8Bit().data();
 }
 

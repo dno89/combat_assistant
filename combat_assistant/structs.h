@@ -47,13 +47,18 @@ struct BaseEntry {
             ++it;
         }
     }
+
+    virtual ~BaseEntry() {};
 };
 
 /**
  * @brief Entry with hp information
  */
 struct HPEntry : public BaseEntry {
-    int hp; //the HP
+    int total_hp; //the total amount of HP
+    int remaining_hp; //the remaining HP
+
+    ~HPEntry() {}
 };
 
 /**
@@ -61,6 +66,7 @@ struct HPEntry : public BaseEntry {
  */
 struct MonsterEntry : public HPEntry {
 ///TODO
+    ~MonsterEntry() {}
 };
 
 /**
@@ -68,6 +74,7 @@ struct MonsterEntry : public HPEntry {
  */
 struct NPCEntry : public HPEntry {
 ///TODO
+    ~NPCEntry() {}
 };
 
 ////////////////////////////
@@ -82,6 +89,7 @@ typedef NPCEntry NPC;
 typedef std::shared_ptr<PC> PC_PtrType;
 typedef std::shared_ptr<BaseEntry> BaseEntry_PtrType;
 typedef std::shared_ptr<CustomNPC> CustomNPC_PtrType;
+typedef std::shared_ptr<HPEntry> HPEntry_PtrType;
 typedef std::shared_ptr<Monster> Monster_PtrType;
 typedef std::shared_ptr<NPC> NPC_PtrType;
 

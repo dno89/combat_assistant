@@ -15,7 +15,7 @@ public:
     explicit PCInsert(QWidget *parent = 0);
     ~PCInsert();
     
-    std::string GetName() const;
+    QString GetName() const;
     int GetInitiative() const;
 
 private:
