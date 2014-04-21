@@ -436,7 +436,91 @@ void MainWindow::lvCharacters_currentChanged(const QModelIndex& cur, const QMode
 }
 
 void MainWindow::DisplayDescription(const QString &uname) {
-    ui->tbNPC->setText(DescribeEntry(uname));
+//    ui->tbDescription->setHtml(R"+(<!DOCTYPE html>
+//                               <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+//                                   <head>
+//                                       <title>Skills</title>
+//                                       <link href="PF.css" rel="stylesheet" type="text/css" />
+//                                       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+//                                       <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
+//                                   </head>
+//                                   <body>
+//                                   <h1 id="aasimar" class="monster-header">Aasimar</h1>
+//                                               <p class="flavor-text"><i>This supernaturally beautiful woman looks human, yet emanates a strange sense of calm and benevolence.</i></p>
+
+//                                               <p class="stat-block-title"><b>Aasimar <span class="stat-block-cr">CR 1/2</span></b></p>
+//                                               <p class="stat-block-1"><b>XP 200</b></p>
+//                                               <p class="stat-block-1">Aasimar cleric 1</p>
+//                                               <p class="stat-block-1">NG Medium <a href="creatureTypes.html#_outsider" >outsider</a> (<a href="creatureTypes.html#_native-subtype" >native</a>)</p>
+//                                               <p class="stat-block-1"><b>Init</b> +0; <b>Senses</b> darkvision 60 ft.; <a href="../skills/perception.html#_perception" >Perception</a> +5</p>
+//                                               <p class="stat-block-breaker"><b>Defense</b></p>
+//                                               <p class="stat-block-1"><b>AC</b> 15, touch 10, flat-footed 15 (+5 armor)</p>
+//                                               <p class="stat-block-1"><b>hp</b> 11 (1d8+3)</p>
+//                                               <p class="stat-block-1"><b>Fort</b> +4, <b>Ref</b> +0, <b>Will</b> +5</p>
+//                                               <p class="stat-block-1"><b>Resist </b>acid 5, cold 5, electricity 5</p>
+//                                               <p class="stat-block-breaker"><b>Offense</b></p>
+//                                               <p class="stat-block-1"><b>Speed</b> 30 ft. (20 ft. in armor)</p>
+//                                               <p class="stat-block-1"><b>Melee</b> heavy mace &ndash;1 (1d8&ndash;1)</p>
+//                                               <p class="stat-block-1"><b>Ranged</b> light crossbow +0 (1d8/19&ndash;20)</p>
+//                                               <p class="stat-block-1"><b>Special Attacks</b> channel positive energy (5/day, 1d6, DC 12); rebuke death (1d4+1, 6/day); touch of good (6/day)</p>
+//                                               <p class="stat-block-1"><b><a href="universalMonsterRules.html#_spell-like-abilities" >Spell-Like Abilities</a></b> (CL 1st)</p>
+//                                               <p class="stat-block-2">1/day&mdash;<i><a href="../spells/daylight.html#_daylight" >daylight</a></i></p>
+//                                               <p class="stat-block-1"><b>Spells Prepared</b> (CL 1st)</p>
+//                                               <p class="stat-block-2">1st&mdash;<i><a href="../spells/bless.html#_bless" >bless</a></i>, <i><a href="../spells/command.html#_command" >command</a></i> (DC 14), <i><a href="../spells/protectionFromEvil.html#_protection-from-evil" >protection from evil</a></i><sup>D</sup></p>
+//                                               <p class="stat-block-2">0 (at will)&mdash;<i><a href="../spells/detectMagic.html#_detect-magic" >detect magic</a>, <a href="../spells/guidance.html#_guidance" >guidance</a>, <a href="../spells/stabilize.html#_stabilize" >stabilize</a></i></p>
+//                                               <p class="stat-block-2"><b>D</b> domain spell; <b>Domains</b> Good, Healing</p>
+//                                               <p class="stat-block-breaker"><b>Statistics</b></p>
+//                                               <p class="stat-block-1"><b>Str</b> 8, <b>Dex</b> 10, <b>Con</b> 14, <b>Int</b> 13, <b>Wis</b> 17, <b>Cha</b> 14</p>
+//                                               <p class="stat-block-1"><b>Base Atk</b> +0; <b>CMB</b> &ndash;1; <b>CMD</b> 9</p>
+//                                               <p class="stat-block-1"><b>Feats</b> <a href="../feats.html#_turn-undead" >Turn Undead</a></p>
+//                                               <p class="stat-block-1"><b>Skills</b> <a href="../skills/diplomacy.html#_diplomacy" >Diplomacy</a> +8, <a href="../skills/heal.html#_heal" >Heal</a> +7, <a href="../skills/knowledge.html#_knowledge" >Knowledge</a> (religion) +5; <b>Racial Modifiers</b> +2 <a href="../skills/diplomacy.html#_diplomacy" >Diplomacy</a>, +2 <a href="../skills/perception.html#_perception" >Perception</a></p>
+//                                               <p class="stat-block-1"><b>Languages</b> Celestial, Common, Draconic</p>
+//                                               <p class="stat-block-breaker"><b>Ecology</b></p>
+//                                               <p class="stat-block-1"><b>Environment</b> any land</p>
+//                                               <p class="stat-block-1"><b>Organization</b> solitary, pair, or team (3&ndash;6)</p>
+//                                               <p class="stat-block-1"><b>Treasure</b> NPC gear (scale mail, heavy mace, light crossbow with 10 bolts, other treasure)</p>
+//                                               <p>Aasimars are humans with a significant amount of celestial or other good outsider blood in their ancestry. Aasimars are not always good, but it is a natural tendency for them, and they gravitate to good faiths or organizations associated with celestials. Aasimar heritage can hide for generations, only to appear suddenly in the child of two apparently human parents. Most societies interpret aasimar births as good omens. Aasimars look mostly human except for some minor physical trait that reveals their unusual heritage. Typical aasimar features are hair that shines like metal, unusual eye or skin color, or even glowing golden halos. </p>
+//                                               <h2>Aasimar Characters</h2>
+//                                               <p>Aasimars are defined by class levels&mdash;they do not possess racial Hit Dice. Aasimars have the following racial traits.</p>
+//                                               <p><b>+2 Charisma, +2 Wisdom</b>: Aasimars are insightful, confident, and personable.</p>
+//                                               <p><b>Normal Speed</b>: Aasimars have a base speed of 30 feet.</p>
+//                                               <p><b>Darkvision</b>: Aasimars can see in the dark up to 60 feet.</p>
+//                                               <p><b>Skilled</b>: Aasimars have a +2 racial bonus on <a href="../skills/diplomacy.html#_diplomacy" >Diplomacy</a> and <a href="../skills/perception.html#_perception" >Perception</a> checks.</p>
+//                                               <p><b>Spell-Like Ability</b>: Aasimars can use <i><a href="../spells/daylight.html#_daylight" >daylight</a></i> once per day as a spell-like ability (caster level equals the aasimar's class level).</p>
+//                                               <p><b>Celestial Resistance</b>: Aasimars have acid resistance 5, cold resistance 5, and electricity resistance 5.</p>
+//                                               <p><b>Languages</b>: Aasimars begin play speaking Common and Celestial. Aasimars with high Intelligence scores can choose any of the following bonus languages: Draconic, Dwarven, Elven, Gnome, Halfling, and Sylvan.</p>
+//                                           </div>
+//                                       </div>
+//                                   </body>
+//)+");
+//    ui->tbDescription->setHtml(R"+(<!DOCTYPE html>
+//                               <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+//                                   <head>
+//                                       <title>Skills</title>
+//                                       <link href="PF.css" rel="stylesheet" type="text/css" />
+//                                       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+//                                       <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
+//                                   </head>
+//                                   <body>
+//                                   <div><h2>Aasimar</h2><h3><i>This supernaturally beautiful woman looks human, yet emanates a strange sense of ca     lm and benevolence.</i></h3><br></br></div><div class="heading"><p class="alignleft">Aasimar</p><p class="alignright">CR 1/2</p><div style="clear: both;"></div></div><div><h5><b>XP </b>200</h5><h5>Aasimar cleric 1</h5><h5>NG Medium ou     tsider (native) </h5><h5><b>Init </b>+0; <b>Senses </b>darkvision 60 ft.; Perception +5</h5></div><hr/><div><h5><b>DEFENSE</b></h5></div><hr/><div><h5><b>AC </b>15, touch 10, flat-footed 15 (+5 armor)</h5><h5><b>hp </b>11 (1d8+3)</h5>     <h5><b>Fort </b>+4, <b>Ref </b>+0, <b>Will </b>+5</h5><h5><b>Resist </b>acid 5, cold 5, electricity 5</h5></div><hr/><div><h5><b>OFFENSE</b></h5></div><hr/><div><h5><b>Spd </b>30 ft. (20 ft. in armor)</h5><h5><b>Melee </b>heavy mace -     1 (1d8-1)</h5><h5><b>Ranged </b>light crossbow +0 (1d8/19-20)</h5><h5><b>Special Attacks </b>channel positive energy (5/day, 1d6, DC 12); rebuke death (1d4+1, 6/day); touch of good (6/day)</h5><h5><b>Spell-Like Abilities</b> (CL 1st)      </br>1/day&mdash;<i>daylight</i></h5></h5><h5><b>Spells Prepared</b> (CL 1st)</br>1st&mdash;<i>bless</i>, <i>command</i> (DC 14), <i>protection from evil</i><sup>D</sup></br>0 (at will)&mdash;<i>detect magic</i>,<i> guidance</i>, <i>s     tabilize</i></h5></h5><h5><b>D</b> domain spell; <b>Domains </b>Good, Healing</h5></div><hr/><div><h5><b>STATISTICS</b></h5></div><hr/><div><h5><b>Str</b> 8, <b>Dex</b> 10, <b>Con</b> 14, <b>Int</b> 13, <b>Wis</b> 17, <b>Cha</b> 14</h     5><h5><b>Base Atk </b>+0; <b>CMB </b>-1; <b>CMD </b>9</h5><h5><b>Feats </b>Turn Undead</h5><h5><b>Skills </b>Diplomacy +8, Heal +7, Knowledge (religion) +5; <b>Racial Modifiers </b>+2 Diplomacy, +2 Perception</h5><h5><b>Languages </b>     Celestial, Common, Draconic</h5></div><hr/><div><h5><b>ECOLOGY</b></h5></div><hr/><div><h5><b>Environment </b>Environment any land</h5><h5><b>Organization </b>solitary, pair, or team (3-6)</h5><h5><b>Treasure </b>NPC gear (scale mail,      heavy mace, light crossbow with 10 bolts, other treasure)</h5></div><br></br><div><h4><p>Aasimars are humans with a signif icant amount of celestial or other good outsider blood in their ancestry.</p><p>Aasimars are not always good,      but it is a natural tendency for them, and they gravitate to good faiths or organizations associated with celestials. Aasimar heritage can hide for generations, only to appear suddenly in the child of two apparently human parents. Mos     t societies interpret aasimar births as good omens. Aasimars look mostly human except for some minor physical trait that reveals their unusual heritage. Typical aasimar features are hair that shines like metal, unusual eye or skin col     or, or even glowing golden halos.</p><p><b>Aasimar Characters</b></br> Aasimars are defined by class levels-they do not possess racial Hit Dice. Aasimars have the following racial traits.</p><p><b>+2 Charisma, +2 Wisdom:</b> Aasimars      are insightful, confident, and personable.</p><p><b>Normal Speed:</b> Aasimars have a base speed of 30 feet.</p><p><b>Darkvision:</b> Aasimars can see in the dark up to 60 feet.</p><p><b>Skilled:</b> Aasimars have a +2 racial bonus on      Diplomacy and Perception checks.</p><p><b>Spell- Like Ability:</b> Aasimars can use daylight once per day as a spell-like ability (caster level equals the aasimar's class level).</p><p><b>Celestial Resistance:</b> Aasimars have acid      resistance 5, cold resistance 5, and electricity resistance 5.</p><p><b>Languages:</b> Aasimars begin play speaking Common and Celestial. Aasimars with high Intelligence scores can choose any of the following bonus languages: Draconic     , Dwarven, Elven, Gnome, Half ling, and Sylvan.</p></h4></div>
+//                                   </body>
+//)+");
+    QString html = QString(R"+(<!DOCTYPE html>
+      <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+          <head>
+              <title>Skills</title>
+              <link href="PF.css" rel="stylesheet" type="text/css"/>
+              <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+              <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1"/>
+          </head>
+          <body>
+          %1
+          </body>
+)+").arg(R"+(<link href="PF.css" rel="stylesheet" type="text/css"/><div><h2>Aasimar</h2><h3><i>This supernaturally beautiful woman looks human, yet emanates a strange sense of ca     lm and benevolence.</i></h3><br></br></div><div class="heading"><p class="alignleft">Aasimar</p><p class="alignright">CR 1/2</p><div style="clear: both;"></div></div><div><h5><b>XP </b>200</h5><h5>Aasimar cleric 1</h5><h5>NG Medium ou     tsider (native) </h5><h5><b>Init </b>+0; <b>Senses </b>darkvision 60 ft.; Perception +5</h5></div><hr/><div><h5><b>DEFENSE</b></h5></div><hr/><div><h5><b>AC </b>15, touch 10, flat-footed 15 (+5 armor)</h5><h5><b>hp </b>11 (1d8+3)</h5>     <h5><b>Fort </b>+4, <b>Ref </b>+0, <b>Will </b>+5</h5><h5><b>Resist </b>acid 5, cold 5, electricity 5</h5></div><hr/><div><h5><b>OFFENSE</b></h5></div><hr/><div><h5><b>Spd </b>30 ft. (20 ft. in armor)</h5><h5><b>Melee </b>heavy mace -     1 (1d8-1)</h5><h5><b>Ranged </b>light crossbow +0 (1d8/19-20)</h5><h5><b>Special Attacks </b>channel positive energy (5/day, 1d6, DC 12); rebuke death (1d4+1, 6/day); touch of good (6/day)</h5><h5><b>Spell-Like Abilities</b> (CL 1st)      </br>1/day&mdash;<i>daylight</i></h5></h5><h5><b>Spells Prepared</b> (CL 1st)</br>1st&mdash;<i>bless</i>, <i>command</i> (DC 14), <i>protection from evil</i><sup>D</sup></br>0 (at will)&mdash;<i>detect magic</i>,<i> guidance</i>, <i>s     tabilize</i></h5></h5><h5><b>D</b> domain spell; <b>Domains </b>Good, Healing</h5></div><hr/><div><h5><b>STATISTICS</b></h5></div><hr/><div><h5><b>Str</b> 8, <b>Dex</b> 10, <b>Con</b> 14, <b>Int</b> 13, <b>Wis</b> 17, <b>Cha</b> 14</h     5><h5><b>Base Atk </b>+0; <b>CMB </b>-1; <b>CMD </b>9</h5><h5><b>Feats </b>Turn Undead</h5><h5><b>Skills </b>Diplomacy +8, Heal +7, Knowledge (religion) +5; <b>Racial Modifiers </b>+2 Diplomacy, +2 Perception</h5><h5><b>Languages </b>     Celestial, Common, Draconic</h5></div><hr/><div><h5><b>ECOLOGY</b></h5></div><hr/><div><h5><b>Environment </b>Environment any land</h5><h5><b>Organization </b>solitary, pair, or team (3-6)</h5><h5><b>Treasure </b>NPC gear (scale mail,      heavy mace, light crossbow with 10 bolts, other treasure)</h5></div><br></br><div><h4><p>Aasimars are humans with a signif icant amount of celestial or other good outsider blood in their ancestry.</p><p>Aasimars are not always good,      but it is a natural tendency for them, and they gravitate to good faiths or organizations associated with celestials. Aasimar heritage can hide for generations, only to appear suddenly in the child of two apparently human parents. Mos     t societies interpret aasimar births as good omens. Aasimars look mostly human except for some minor physical trait that reveals their unusual heritage. Typical aasimar features are hair that shines like metal, unusual eye or skin col     or, or even glowing golden halos.</p><p><b>Aasimar Characters</b></br> Aasimars are defined by class levels-they do not possess racial Hit Dice. Aasimars have the following racial traits.</p><p><b>+2 Charisma, +2 Wisdom:</b> Aasimars      are insightful, confident, and personable.</p><p><b>Normal Speed:</b> Aasimars have a base speed of 30 feet.</p><p><b>Darkvision:</b> Aasimars can see in the dark up to 60 feet.</p><p><b>Skilled:</b> Aasimars have a +2 racial bonus on      Diplomacy and Perception checks.</p><p><b>Spell- Like Ability:</b> Aasimars can use daylight once per day as a spell-like ability (caster level equals the aasimar's class level).</p><p><b>Celestial Resistance:</b> Aasimars have acid      resistance 5, cold resistance 5, and electricity resistance 5.</p><p><b>Languages:</b> Aasimars begin play speaking Common and Celestial. Aasimars with high Intelligence scores can choose any of the following bonus languages: Draconic     , Dwarven, Elven, Gnome, Half ling, and Sylvan.</p></h4></div>)+");
+//    std::cout << html.toStdString() << std::endl;
+    ui->tbDescription->setHtml(html);
+
+//    ui->tbNPC->setText(DescribeEntry(uname));
 
 //    if(m_template_table.count(uname) || m_npc_table.count(uname)) {
 //        ui->tbNPC->setEnabled(true);
