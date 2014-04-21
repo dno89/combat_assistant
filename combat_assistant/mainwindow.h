@@ -208,6 +208,16 @@ private:
     void DisplayDescription(const QString& uname);
     QString DescribeEntry(const QString& uname) const;
     void readConf();
+    template<typename T>
+    void AddEntry(const QString& uname, const T& ptr) {
+        assert(m_entry_lut.count(uname) == 0);
+
+        BaseEntry_PtrType bptr = std::dynamic_pointer_cast<BaseEntry>(ptr);
+        //add it to the entry lut
+        m_entry_lut[uname] = bptr;
+        //add it to the initiative model
+        m_initiative.AddInitiativeEntry(uname);
+    }
 };
 
 #endif // MAINWINDOW_H
