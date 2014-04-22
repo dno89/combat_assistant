@@ -42,6 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //setup the splitter
+    ui->mainSplitter->setStretchFactor(0, 30);
+    ui->mainSplitter->setStretchFactor(1, 70);
+
     ///LUA SETUP
     //setup the lua state
     m_L = luaL_newstate();
@@ -346,7 +350,7 @@ QString MainWindow::DescribeEntry(const QString& uname) const {
 
     assert(m_entry_lut.count(uname));
 
-    ostrstream out;
+//    ostrstream out;
 
     BaseEntry_PtrType baseentry = m_entry_lut.at(uname);
     CustomNPC_PtrType cnpc;
@@ -374,73 +378,8 @@ QString MainWindow::DescribeEntry(const QString& uname) const {
                        %1
                        </div>)+").arg(uname);
     }
-
-//    if(m_template_table.count(uname)) {
-//        const template_npc& n = m_template_table.at(uname);
-
-//        const char* title;
-//        out << "===========[ " << uname << " ]===========" << endl;
-//        out << "Tag: " << n.TAG << "; Liv: " << n.LIV << "; DV: " << "d" << n.DV << endl;
-//        out << "INIZ: " << showpos << n.INIZ << noshowpos << " (" << n.INIZ_val << ")" << endl;
-//        //out << string(strlen(title), '=');
-//        title = "===========[ DIFESA ]===========";
-//        out << title << endl;
-//        out << "CA:\t" << n.CA << " (contatto: " << n.CA_cont << ", sprovvista: " << n.CA_sprovv << ")" << endl;
-//        out << "PF:\t" << n.remaining_PF << " / " << n.PF << endl;
-//        out << "TEM: " << showpos << n.TEM << "; RIF: " << n.RIF << "; VOL: " << n.VOL << endl;
-//        if(!n.DIF.empty()) {
-//            out << "Abilita' di difesa: " << endl;
-//            for(auto d : n.DIF) {
-//                out << "\t> " << d << endl;
-//            }
-//        }
-//        title = "===========[ OFFESA ]===========";
-//        out << title << endl;
-//        out << "VEL: " << n.VEL << "m ("<< std::floor(n.VEL/1.5) << " quadretti)" << endl;
-//        out << "MISCHIA: " << n.A_MIS.NAME << ": " << n.MIS.TPC << " (" << n.MIS.DAN << ", " << n.A_MIS.CRI <<")" << endl;
-//        out << "DISTANZA: " << n.A_DIS.NAME << ": " << n.DIS.TPC << " (" << n.DIS.DAN << ", " << n.A_DIS.CRI << ")" << endl;
-
-//        title = "===========[ STATISTICHE ]===========";
-//        out << title << endl;
-//        out << noshowpos << "FOR:" << n.FOR << "; DES: " << n.DES << "; COS: " << n.COS << "; INT: " << n.INT << "; SAG: " << n.SAG << "; CAR: " << n.CAR << ";" << endl;
-//        out << "BAB: " << n.BAB << "; BMC: " << n.BMC << "; DMC: " << n.DMC << endl;
-//        title = "===========[ TALENTI ]===========";
-//        out << title << endl;
-//        for(auto t : n.TAL) {
-//            out << " > " << t << endl;
-//        }
-//        title = "===========[ ARMATURA / SCUDO ]===========";
-//        out << title << endl;
-//        out << n.ARM.NAME << ":\t" << showpos << n.ARM.BONUS << " CA, " << n.ARM.PEN << " pen, ";
-//        if(n.ARM.DES_MAX > 0) {
-//            out << n.ARM.DES_MAX << " DES max";
-//        } out << endl;
-//        out << n.SCU.NAME << ":\t" << showpos << n.SCU.BONUS << " CA, " << n.SCU.PEN << " pen, ";
-//        if(n.SCU.DES_MAX > 0) {
-//            out << n.SCU.DES_MAX << " DES max";
-//        } out << endl;
-//        title = "===========[ OGGETTI ]===========";
-//        out << title << endl;
-//        out << noshowpos << "mp:\t" << n.MON.MP << endl;
-//        out << "mo:\t" << n.MON.MO << endl;
-//        out << "ma:\t" << n.MON.MA << endl;
-//        out << "mr:\t" << n.MON.MR << endl;
-//        for(auto t : n.OGG) {
-//            out << " - " << t << endl;
-//        }
-
-//        out << '\0';
-//    } else {
-//        const npc& n = m_npc_table.at(uname);
-
-//        const char* title = "===========[ GENERIC NPC ]===========";
-//        out << title << endl;
-//        out << "PF:\t" << n.remaining_PF << " / " << n.PF << endl;
-//        out << "INIZ:\t" << noshowpos << " (" << n.INIZ_val << ")" << endl;
-//        out << '\0';
-//    }
-
-    return QString::fromStdString(out.str());
+//    return QString::fromStdString(out.str());
+    return QString("");
 }
 
 void MainWindow::lvCharacters_currentChanged(const QModelIndex& cur, const QModelIndex& prev) {
@@ -579,7 +518,7 @@ void MainWindow::on_actionAdd_Custom_NPC_triggered()
             init += d20(eng);
         }
 
-        std::string pf = m_npcinsert_win.GetPF();
+        std::string pf = processHP(m_npcinsert_win.GetPF());
         int PF;
         pf = "NPC_PF = " + pf;
         if(luaL_loadstring(m_L, pf.c_str()) || lua_pcall(m_L, 0, 0, 0)) {

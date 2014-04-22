@@ -12,5 +12,7 @@
         <file alias="/ico/monster">res/ico/monster-devil.jpg</file>
         <file alias="/ico/cnpc">res/ico/cnpc.jpg</file>
         <file alias="/ico/npc">res/ico/npc.jpg</file>
+        <file alias="/ico/battle1">res/ico/roc_pathfinder.jpg</file>
+        <file alias="/ico/battle2">res/ico/battle2.jpg</file>
     </qresource>
 </RCC>

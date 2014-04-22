@@ -14,11 +14,11 @@ npcinsert::~npcinsert()
 }
 
 QString npcinsert::GetUName() const {
-    return ui->teName->toPlainText().toLocal8Bit().data();
+    return ui->teName->toPlainText();
 }
 
 std::string npcinsert::GetPF() const {
-    return ui->tePF->toPlainText().toLocal8Bit().data();
+    return ui->tePF->toPlainText().toStdString();
 }
 
 int npcinsert::GetIni() const {
