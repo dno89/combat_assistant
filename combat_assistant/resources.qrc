@@ -14,5 +14,6 @@
         <file alias="/ico/npc">res/ico/npc.jpg</file>
         <file alias="/ico/battle1">res/ico/roc_pathfinder.jpg</file>
         <file alias="/ico/battle2">res/ico/battle2.jpg</file>
+        <file alias="/ico/current">res/ico/CURRENT.png</file>
     </qresource>
 </RCC>

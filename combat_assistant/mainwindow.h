@@ -29,7 +29,8 @@ class MainWindow;
 //model for model/view paradigm
 class InitiativeListModel : public QAbstractListModel {
 public:
-    InitiativeListModel(std::map<QString, BaseEntry_PtrType>& entry_lut) : m_entry_lut(entry_lut)
+    InitiativeListModel(std::map<QString, BaseEntry_PtrType>& entry_lut, const int& current_index) :
+        m_entry_lut(entry_lut), m_current_index(current_index)
         {}
 
     //virtual functions
@@ -51,7 +52,11 @@ public:
         } else if(role == Qt::DecorationRole) {
             QString name = m_initiative_list[index.row()];
             if(m_entry_lut.count(name)) {
-                name = m_entry_lut.at(name)->ico;
+                if(index.row() == m_current_index) {
+                    name = ":/res/ico/current";
+                } else {
+                    name = m_entry_lut.at(name)->ico;
+                }
             } else {
                 throw std::runtime_error("InitiativeListModel ERROR: unknown name " + name.toStdString());
             }
@@ -112,6 +117,8 @@ private:
     std::vector<QString> m_initiative_list;
     //the lookup tables
     std::map<QString, BaseEntry_PtrType>& m_entry_lut;
+    //the current index
+    const int& m_current_index;
     //the comparator
 //    bool Comp(const QString& s1, const QString& s2) {
 //        int i1 = GetInitiative(s1), i2 = GetInitiative(s2);
@@ -186,7 +193,7 @@ private:
     lua_State* m_L;
 
     //my model
-    InitiativeListModel m_initiative;
+    InitiativeListModel m_initiative_model;
     int m_currentIndex;
 
     //context menu
@@ -216,7 +223,7 @@ private:
         //add it to the entry lut
         m_entry_lut[uname] = bptr;
         //add it to the initiative model
-        m_initiative.AddInitiativeEntry(uname);
+        m_initiative_model.AddInitiativeEntry(uname);
     }
 };
 

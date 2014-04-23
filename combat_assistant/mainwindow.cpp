@@ -38,13 +38,14 @@ std::string processHP(const std::string& str) {
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_initiative(m_entry_lut), m_npcinsert_win(this)
+    m_initiative_model(m_entry_lut, m_currentIndex), m_npcinsert_win(this)
 {
     ui->setupUi(this);
 
     //setup the splitter
-    ui->mainSplitter->setStretchFactor(0, 30);
-    ui->mainSplitter->setStretchFactor(1, 70);
+    ui->mainSplitter->setStretchFactor(0, 25);
+    ui->mainSplitter->setStretchFactor(1, 50);
+    ui->mainSplitter->setStretchFactor(2, 75);
 
     ///LUA SETUP
     //setup the lua state
@@ -63,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     //setup data/model
-    ui->lvCharacters->setModel(&m_initiative);
+    ui->lvCharacters->setModel(&m_initiative_model);
 
     //grab the keyboard
     //grabKeyboard();
@@ -201,8 +202,8 @@ QString MainWindow::generateUName(const QString& name) {
 void MainWindow::on_pbUp_clicked()
 {
     int index = ui->lvCharacters->currentIndex().row();
-    if(m_initiative.Swap(index, index-1)) {
-        ui->lvCharacters->setCurrentIndex(m_initiative.index(index-1, 0));
+    if(m_initiative_model.Swap(index, index-1)) {
+        ui->lvCharacters->setCurrentIndex(m_initiative_model.index(index-1, 0));
 
         //copy the initiative value
 
@@ -212,8 +213,8 @@ void MainWindow::on_pbUp_clicked()
 void MainWindow::on_pbUp_2_clicked()
 {
     int index = ui->lvCharacters->currentIndex().row();
-    if(m_initiative.Swap(index, index+1)) {
-        ui->lvCharacters->setCurrentIndex(m_initiative.index(index+1, 0));
+    if(m_initiative_model.Swap(index, index+1)) {
+        ui->lvCharacters->setCurrentIndex(m_initiative_model.index(index+1, 0));
     }
 }
 
@@ -226,15 +227,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 //        std::cerr << "index: " << index << ", rowCount: " << m_initiative.rowCount() << std::endl;
 
-        if(m_currentIndex+1 < m_initiative.rowCount()) {
+        if(m_currentIndex+1 < m_initiative_model.rowCount()) {
             ++m_currentIndex;
-        } else if(m_currentIndex >= 0 && m_currentIndex == m_initiative.rowCount()-1) {
+        } else if(m_currentIndex >= 0 && m_currentIndex == m_initiative_model.rowCount()-1) {
             m_currentIndex = 0;
         }
-        ui->lvCharacters->setCurrentIndex(m_initiative.index(m_currentIndex, 0));
+        ui->lvCharacters->setCurrentIndex(m_initiative_model.index(m_currentIndex, 0));
     } else if(event->key() == Qt::Key_Backspace) {
         //std::cerr << "enter pressed" << std::endl;
-        ui->lvCharacters->setCurrentIndex(m_initiative.index(m_currentIndex, 0));
+        ui->lvCharacters->setCurrentIndex(m_initiative_model.index(m_currentIndex, 0));
     } else if(event->key() == Qt::Key_Plus) {
         ChangePF(1);
     } else if(event->key() == Qt::Key_Minus) {
@@ -244,9 +245,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 void MainWindow::on_pbRemove_clicked()
 {
-    QString uname = m_initiative.GetUName(ui->lvCharacters->currentIndex().row());
+    QString uname = m_initiative_model.GetUName(ui->lvCharacters->currentIndex().row());
     int index = ui->lvCharacters->currentIndex().row();
-    m_initiative.Remove(index);
+    m_initiative_model.Remove(index);
 
     if(index < m_currentIndex) {
         --m_currentIndex;
@@ -387,7 +388,7 @@ void MainWindow::lvCharacters_currentChanged(const QModelIndex& cur, const QMode
 
 //    std::string str = m_initiative.GetUName(index).toStdString();
 
-    DisplayDescription(m_initiative.GetUName(index));
+    DisplayDescription(m_initiative_model.GetUName(index));
 }
 
 void MainWindow::DisplayDescription(const QString &uname) {
@@ -475,13 +476,13 @@ void MainWindow::change_pf() {
 
 void MainWindow::ChangePF(int val) {
     int index = ui->lvCharacters->currentIndex().row();
-    QString uname = m_initiative.GetUName(index);
+    QString uname = m_initiative_model.GetUName(index);
 
     HPEntry_PtrType hpp = dynamic_pointer_cast<HPEntry>(m_entry_lut[uname]);
 
     if(hpp) {
         hpp->remaining_hp += val;
-        lvCharacters_currentChanged(m_initiative.index(index), m_initiative.index(index));
+        lvCharacters_currentChanged(m_initiative_model.index(index), m_initiative_model.index(index));
     }
 }
 
