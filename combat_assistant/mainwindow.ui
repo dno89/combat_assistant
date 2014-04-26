@@ -44,6 +44,9 @@
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="1">
+     <layout class="QVBoxLayout" name="rightVLayout"/>
+    </item>
     <item row="0" column="0">
      <widget class="QSplitter" name="mainSplitter">
       <property name="sizePolicy">
@@ -82,13 +85,16 @@
           <property name="title">
            <string>Initiative</string>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <property name="flat">
            <bool>false</bool>
           </property>
           <property name="checkable">
            <bool>false</bool>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -159,6 +165,21 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
                <widget class="QPushButton" name="pbUp">
                 <property name="text">
@@ -302,9 +323,6 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-    </item>
-    <item row="0" column="1">
-     <layout class="QVBoxLayout" name="rightVLayout"/>
     </item>
    </layout>
   </widget>

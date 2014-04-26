@@ -43,9 +43,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     //setup the splitter
-    ui->mainSplitter->setStretchFactor(0, 25);
-    ui->mainSplitter->setStretchFactor(1, 50);
-    ui->mainSplitter->setStretchFactor(2, 75);
+    ui->mainSplitter->setStretchFactor(0, 20);
+    ui->mainSplitter->setStretchFactor(1, 70);
+    ui->mainSplitter->setStretchFactor(2, 10);
 
     ///LUA SETUP
     //setup the lua state
@@ -503,6 +503,7 @@ void MainWindow::on_actionAdd_NPC_triggered() {
 void MainWindow::on_lvCharacters_doubleClicked(const QModelIndex &index)
 {
     m_currentIndex = index.row();
+    m_initiative_model.Refresh();
 }
 
 void MainWindow::on_actionAdd_Custom_NPC_triggered()

@@ -110,6 +110,10 @@ public:
             throw std::runtime_error("InitiativeListModel ERROR: unknown name " + uname.toStdString());
         }
     }
+    void Refresh() {
+        QModelIndex first = this->createIndex(0, 0, nullptr), last = this->createIndex(m_entry_lut.size()-1, 0, nullptr);
+        emit dataChanged(first, last);
+    }
 
 
 private:
