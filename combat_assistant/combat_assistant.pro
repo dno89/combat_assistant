@@ -15,16 +15,21 @@ TEMPLATE = app
 SOURCES += main.cpp\
 		mainwindow.cpp \
 		pcinsert.cpp \
-		npcinsert.cpp
+		npcinsert.cpp \
+    annotationinsert.cpp
 
 HEADERS  += mainwindow.h \
 			pcinsert.h \
 			npcinsert.h \
-			structs.h
+			structs.h \
+    annotationinsert.h \
+	InitiativeListModel.h \
+	AnnotationsModel.h
 
 FORMS    += mainwindow.ui \
 			 pcinsert.ui \
-			 npcinsert.ui
+			 npcinsert.ui \
+    annotationinsert.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
 

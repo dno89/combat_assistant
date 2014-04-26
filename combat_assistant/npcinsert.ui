@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Insert new custom NPC</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -58,7 +58,7 @@
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>200</x>
      <y>70</y>
      <width>111</width>
      <height>31</height>
@@ -71,9 +71,9 @@
   <widget class="QCheckBox" name="cbRd20">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>110</y>
-     <width>81</width>
+     <x>200</x>
+     <y>100</y>
+     <width>91</width>
      <height>23</height>
     </rect>
    </property>
@@ -85,32 +85,6 @@
    </property>
    <property name="tristate">
     <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="teName">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>10</y>
-     <width>271</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="tabChangesFocus">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="tePF">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>70</y>
-     <width>91</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="tabChangesFocus">
-    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -126,7 +100,34 @@
     <string>NPC Name:</string>
    </property>
   </widget>
+  <widget class="QLineEdit" name="leName">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>10</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lePF">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>70</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
+ <tabstops>
+  <tabstop>leName</tabstop>
+  <tabstop>lePF</tabstop>
+  <tabstop>sbIni</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>cbRd20</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

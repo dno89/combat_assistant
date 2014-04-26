@@ -68,23 +68,14 @@ struct HPEntry : public BaseEntry {
 /**
  * @brief A complete monster entry
  */
-struct MonsterEntry : public HPEntry {
-    MonsterEntry() {
+struct DescriptionEntry : public HPEntry {
+    DescriptionEntry() {
         ico = ":/res/ico/monster";
     }
-///TODO
-    ~MonsterEntry() {}
-};
 
-/**
- * @brief A complete npc entry
- */
-struct NPCEntry : public HPEntry {
-    NPCEntry() {
-        ico = ":/res/ico/npc";
-    }
-///TODO
-    ~NPCEntry() {}
+    QString description;
+
+    ~DescriptionEntry() {}
 };
 
 ////////////////////////////
@@ -92,8 +83,8 @@ struct NPCEntry : public HPEntry {
 ////////////////////////////
 typedef BaseEntry PC;
 typedef HPEntry CustomNPC;
-typedef MonsterEntry Monster;
-typedef NPCEntry NPC;
+typedef DescriptionEntry Monster;
+typedef DescriptionEntry NPC;
 
 //pointers
 typedef std::shared_ptr<PC> PC_PtrType;
@@ -102,6 +93,7 @@ typedef std::shared_ptr<CustomNPC> CustomNPC_PtrType;
 typedef std::shared_ptr<HPEntry> HPEntry_PtrType;
 typedef std::shared_ptr<Monster> Monster_PtrType;
 typedef std::shared_ptr<NPC> NPC_PtrType;
+typedef std::shared_ptr<DescriptionEntry> DescriptionEntry_PtrType;
 
 
 

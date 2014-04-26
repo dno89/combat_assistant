@@ -14,7 +14,8 @@ PCInsert::~PCInsert()
 }
 
 QString PCInsert::GetName() const {
-    return ui->teName->toPlainText();
+    return ui->leName->text();
+//    return ui->teName->toPlainText();
 }
 
 int PCInsert::GetInitiative() const {
