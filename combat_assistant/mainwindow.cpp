@@ -106,6 +106,7 @@ void MainWindow::readConf() {
     if(readFromConf("monster_db", &monster_db_fname)) {
         try {
             m_monster_db.loadDatabase(monster_db_fname.c_str());
+            m_monster_labels = m_monster_db.getLabelMap();
             m_enable_monster_db = true;
         } catch (std::runtime_error& e) {
             std::cerr << "Something wrong happened reading monster database '" << monster_db_fname << "': " << e.what() << std::endl;
@@ -430,13 +431,16 @@ QString MainWindow::DescribeEntry(const QString& uname) const {
 
     BaseEntry_PtrType baseentry = m_entry_lut.at(uname);
     CustomNPC_PtrType cnpc;
-    Monster_PtrType monster;
-    NPC_PtrType npc;
+    DescriptionEntry_PtrType mon_npc;
 
-    if(npc = dynamic_pointer_cast<NPC>(baseentry)) {
-        //NPC
-    } else if(monster = dynamic_pointer_cast<Monster>(baseentry)) {
-        //Monster
+    if(mon_npc = dynamic_pointer_cast<DescriptionEntry>(baseentry)) {
+        //NPC or Monster
+        std::string str = mon_npc->description.toStdString();
+//        std::cerr << str << std::endl << std::endl;
+        boost::regex r("<b>hp </b>[[:digit:]]+.\\((.*?)\\)");
+        str = boost::regex_replace(str, r, "<b>hp </b>" + std::to_string(mon_npc->remaining_hp)+"/"+std::to_string(mon_npc->total_hp)+"(\\1)");
+//        std::cerr << str << std::endl;
+        return QString::fromStdString(formatDescription(str));
     } else if(cnpc = dynamic_pointer_cast<CustomNPC>(baseentry)) {
         //custom NPC
         return QString(R"+(
@@ -624,10 +628,33 @@ void MainWindow::on_lvCharacters_doubleClicked(const QModelIndex &index)
 //    m_initiative_model.Refresh();
 }
 
+int MainWindow::generatePF(const string &str) {
+    std::string f = "PF = " + str;
+    int PF;
+    if(luaL_loadstring(m_L, f.c_str()) || lua_pcall(m_L, 0, 0, 0)) {
+        std::cerr << "Error while executing PF script" << std::endl;
+        std::cerr << lua_tostring(m_L, -1) << std::endl;
+        PF = 0;
+    } else {
+        //get the global value of PF
+        lua_getglobal(m_L, "PF");
+        if(lua_isnumber(m_L, -1)) {
+            PF = lua_tointeger(m_L, -1);
+        } else {
+            PF = 0;
+        }
+
+        //erase the global value
+        lua_pushnil(m_L);
+        lua_setglobal(m_L, "PF");
+    }
+
+    return PF;
+}
+
 void MainWindow::on_actionAdd_Custom_NPC_triggered()
 {
     //std::cerr << "Add triggered" << std::endl;
-    //releaseKeyboard();
     if(m_npcinsert_win.exec() != QDialog::Rejected) {
 
         QString name = m_npcinsert_win.GetUName();
@@ -638,46 +665,17 @@ void MainWindow::on_actionAdd_Custom_NPC_triggered()
             init += d20(eng);
         }
 
-        std::string pf = processHP(m_npcinsert_win.GetPF());
-        int PF;
-        pf = "NPC_PF = " + pf;
-        if(luaL_loadstring(m_L, pf.c_str()) || lua_pcall(m_L, 0, 0, 0)) {
-            std::cerr << "Error while executing pf script" << std::endl;
-            std::cerr << lua_tostring(m_L, -1) << std::endl;
-            PF = 0;
-        } else {
-            //get the global value of PF
-            lua_getglobal(m_L, "NPC_PF");
-            if(lua_isnumber(m_L, -1)) {
-                PF = lua_tointeger(m_L, -1);
-            } else {
-                PF = 0;
-            }
-
-            //erase the global value
-            lua_pushnil(m_L);
-            lua_setglobal(m_L, "NPC_PF");
-        }
-
         CustomNPC_PtrType cnpc = make_shared<CustomNPC>();
         //set the name and the initiative
         cnpc->name = name;
         cnpc->initiative = init;
-        cnpc->total_hp = PF;
-        cnpc->remaining_hp = PF;
+        cnpc->total_hp = generatePF(processHP(m_npcinsert_win.GetPF()));
+        cnpc->remaining_hp = cnpc->total_hp;
 
         AddEntry(name, cnpc);
-        //add it to the table
-//        m_entry_lut[name] = static_pointer_cast<BaseEntry>(cnpc);
-        //add an initiative entry
-//        m_initiative.AddInitiativeEntry(name);
-
-        //std::cerr << name << " " << init << std::endl;
     }
 
     m_npcinsert_win.hide();
-    //m_npcinsert_win.close();
-    //grabKeyboard();
 }
 
 QString MainWindow::getCurrentUName() const {
@@ -703,6 +701,24 @@ void MainWindow::on_actionAdd_Monster_triggered() {
         ///add monster
         MonsterInsert mi_win(m_monster_db, this);
         if(mi_win.exec() != QDialog::Rejected) {
+            //get the record
+            txtDatabase::RecordType r = mi_win.getSelectedMonster();
+            int rep = mi_win.getQty();
+            for(int ii = 0; ii < rep; ++ii) {
+                Monster_PtrType m = make_shared<Monster>();
+                //set m field
+                m->name = generateUName(QString::fromStdString(r[m_monster_labels.at("Name")]));
+                std::string descr = r[m_monster_labels.at("FullText")];
+                //the initiative
+                m->initiative = d20(eng)+extractInit(descr);
+                //pf
+                m->total_hp = generatePF(processHP(r[m_monster_labels.at("HD")]));
+                m->remaining_hp = m->total_hp;
+                //description
+                m->description = QString::fromStdString(descr);
+
+                AddEntry(m->name, m);
+            }
         }
 //        if(m_monster_insert_win.exec() != QDialog::Rejected) {
 //        }

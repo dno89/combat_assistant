@@ -112,6 +112,7 @@ private:
     //monster db
     bool m_enable_monster_db;
     txtDatabase m_monster_db;
+    txtDatabase::LabelMapType m_monster_labels;
 
     ///my functions
     //generate unique name
@@ -143,6 +144,7 @@ private:
     void updateAnnotations();
     bool readFromConf(const char* name, double* out_val);
     bool readFromConf(const char* name, std::string* out_val);
+    int generatePF(const std::string& str);
 };
 
 #endif // MAINWINDOW_H

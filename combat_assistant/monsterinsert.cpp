@@ -67,3 +67,7 @@ void MonsterInsert::on_leRegex_textChanged(const QString &arg1) {
     m_filtered_model.setDatabase(m_db.filter("Name", r));
 
 }
+
+int MonsterInsert::getQty() const {
+    return ui->sbQty->value();
+}

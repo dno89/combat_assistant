@@ -66,6 +66,7 @@ public:
     ~MonsterInsert();
 
     txtDatabase::RecordType getSelectedMonster() const;
+    int getQty() const;
 public slots:
     void lvMonster_currentChanged(const QModelIndex& cur, const QModelIndex& prev);
 private slots:
