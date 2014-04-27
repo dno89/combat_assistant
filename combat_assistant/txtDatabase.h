@@ -136,7 +136,7 @@ public:
 	/**
 	 * @brief return the current labels map
 	 */
-	LabelMapType getLabelMap() const {
+    const LabelMapType& getLabelMap() const {
 		return m_labels;
 	}
 	

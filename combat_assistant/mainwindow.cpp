@@ -14,10 +14,12 @@
 #include <iomanip>
 #include <random>
 #include <memory>
+#include "utils.h"
 ///other forms
 #include <pcinsert.h>
 #include <npcinsert.h>
 #include <annotationinsert.h>
+#include <monsterinsert.h>
 ///boost
 #include <boost/regex.hpp>
 
@@ -29,12 +31,6 @@ using namespace std;
 //global
 static std::default_random_engine eng(time(NULL));
 static std::uniform_int_distribution<short> d20(1, 20);
-
-//global functions
-std::string processHP(const std::string& str) {
-        boost::regex r("([[:digit:]]+)d([[:digit:]]+)");
-        return regex_replace(str, r, "d(\\2, \\1)");
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -703,6 +699,8 @@ void MainWindow::timeoutTick() {
 void MainWindow::on_actionAdd_Monster_triggered() {
     if(m_enable_monster_db) {
         ///add monster
-        std::cout << "Add monster!!!" << std::endl;
+        MonsterInsert mi_win(m_monster_db, this);
+        if(mi_win.exec() != QDialog::Rejected) {
+        }
     }
 }

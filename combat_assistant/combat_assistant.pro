@@ -17,7 +17,8 @@ SOURCES += main.cpp\
 		pcinsert.cpp \
 		npcinsert.cpp \
     annotationinsert.cpp \
-    monsterinsert.cpp
+    monsterinsert.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
 			pcinsert.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
 	InitiativeListModel.h \
 	AnnotationsModel.h \
 	txtDatabase.h \
-    monsterinsert.h
+    monsterinsert.h \
+    utils.h
 
 FORMS    += mainwindow.ui \
 			 pcinsert.ui \
