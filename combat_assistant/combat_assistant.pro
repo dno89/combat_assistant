@@ -16,7 +16,8 @@ SOURCES += main.cpp\
 		mainwindow.cpp \
 		pcinsert.cpp \
 		npcinsert.cpp \
-    annotationinsert.cpp
+    annotationinsert.cpp \
+    monsterinsert.cpp
 
 HEADERS  += mainwindow.h \
 			pcinsert.h \
@@ -24,12 +25,15 @@ HEADERS  += mainwindow.h \
 			structs.h \
     annotationinsert.h \
 	InitiativeListModel.h \
-	AnnotationsModel.h
+	AnnotationsModel.h \
+	txtDatabase.h \
+    monsterinsert.h
 
 FORMS    += mainwindow.ui \
 			 pcinsert.ui \
 			 npcinsert.ui \
-    annotationinsert.ui
+    annotationinsert.ui \
+    monsterinsert.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
 

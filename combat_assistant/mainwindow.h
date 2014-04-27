@@ -24,6 +24,8 @@
 //models
 #include <InitiativeListModel.h>
 #include <AnnotationsModel.h>
+//others
+#include "txtDatabase.h"
 
 namespace Ui {
 class MainWindow;
@@ -67,6 +69,8 @@ private slots:
 
     void on_actionAdd_Custom_NPC_triggered();
 
+    void on_actionAdd_Monster_triggered();
+
 public slots:
     void lvCharacters_currentChanged(const QModelIndex &cur, const QModelIndex &prev);
     void timeoutTick();
@@ -102,6 +106,10 @@ private:
     QTimer m_timeout;
     int m_spareTime;
     double m_playerReactionTime;
+
+    //monster db
+    bool m_enable_monster_db;
+    txtDatabase m_monster_db;
 
     ///my functions
     //generate unique name

@@ -102,6 +102,21 @@ void MainWindow::readConf() {
         std::cerr << "No reaction_time property found, assuming a reaction time of 10s" << std::endl;
         m_playerReactionTime = 10.0;
     }
+
+    //monster db
+    std::string monster_db_fname;
+    if(readFromConf("monster_db", &monster_db_fname)) {
+        try {
+            m_monster_db.loadDatabase(monster_db_fname.c_str());
+            m_enable_monster_db = true;
+        } catch (std::runtime_error& e) {
+            std::cerr << "Something wrong happened reading monster database '" << monster_db_fname << "': " << e.what() << std::endl;
+            m_enable_monster_db = false;
+        }
+    } else {
+        std::cerr << "No monster_db in conf.lua: monster database not enabled" << std::endl;
+        m_enable_monster_db = false;
+    }
 }
 
 bool MainWindow::readFromConf(const char *name, double *out_val) {
@@ -684,3 +699,10 @@ void MainWindow::timeoutTick() {
     ui->lcdTimeout->display(QString("%1.%2").arg(floor(m_spareTime/1000)).arg((m_spareTime%1000)/100));
 }
 
+
+void MainWindow::on_actionAdd_Monster_triggered() {
+    if(m_enable_monster_db) {
+        ///add monster
+        std::cout << "Add monster!!!" << std::endl;
+    }
+}
