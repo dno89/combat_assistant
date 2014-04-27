@@ -19,6 +19,7 @@
 //other forms
 #include "npcinsert.h"
 #include "pcinsert.h"
+#include "monsterinsert.h"
 //struct
 #include "structs.h"
 //models
@@ -98,6 +99,7 @@ private:
 
     //insert windows
     npcinsert m_npcinsert_win;
+//    MonsterInsert m_monster_insert_win;
 
     ///configurations
     std::string m_base_script;

@@ -52,3 +52,18 @@ MonsterInsert::~MonsterInsert()
 {
     delete ui;
 }
+
+txtDatabase::RecordType MonsterInsert::getSelectedMonster() const {
+    return m_filtered_model.getRecord(ui->lvMonsters->currentIndex().row());
+}
+
+void MonsterInsert::on_leRegex_returnPressed() {
+
+}
+
+void MonsterInsert::on_leRegex_textChanged(const QString &arg1) {
+    boost::regex r(arg1.toStdString(), (!ui->cbCaseSensitive->isChecked())?boost::regex::icase:0 | boost::regex::extended);
+
+    m_filtered_model.setDatabase(m_db.filter("Name", r));
+
+}

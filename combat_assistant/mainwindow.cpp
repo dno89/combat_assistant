@@ -35,7 +35,9 @@ static std::uniform_int_distribution<short> d20(1, 20);
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_initiative_model(m_entry_lut, m_currentIndex), m_npcinsert_win(this)
+    m_initiative_model(m_entry_lut, m_currentIndex), m_npcinsert_win(this),
+    m_monster_db("\t") //,
+//    m_monster_insert_win(m_monster_db, this)
 {
     ui->setupUi(this);
 
@@ -702,5 +704,7 @@ void MainWindow::on_actionAdd_Monster_triggered() {
         MonsterInsert mi_win(m_monster_db, this);
         if(mi_win.exec() != QDialog::Rejected) {
         }
+//        if(m_monster_insert_win.exec() != QDialog::Rejected) {
+//        }
     }
 }

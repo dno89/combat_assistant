@@ -43,6 +43,9 @@ public:
     QString getField(int record_index, int field_index) const {
         return QString::fromStdString(m_db[record_index][field_index]);
     }
+    txtDatabase::RecordType getRecord(int index) const {
+        return m_db[index];
+    }
     void setDatabase(const txtDatabase::DatabaseType& db) {
         m_db = db;
         Refresh();
@@ -65,6 +68,11 @@ public:
     txtDatabase::RecordType getSelectedMonster() const;
 public slots:
     void lvMonster_currentChanged(const QModelIndex& cur, const QModelIndex& prev);
+private slots:
+    void on_leRegex_returnPressed();
+
+    void on_leRegex_textChanged(const QString &arg1);
+
 private:
     Ui::MonsterInsert *ui;
     const txtDatabase& m_db;
