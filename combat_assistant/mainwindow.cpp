@@ -549,7 +549,7 @@ void MainWindow::ShowMenu(const QPoint& p) {
 void MainWindow::MenuSetup() {
     //HP manipulation
     QMenu* pf_menu = new QMenu("HP", this);
-    for(int ii = -60; ii >= +30; ++ii) {
+    for(int ii = -60; ii <= +30; ++ii) {
         if(ii == 0) continue;
 
         QAction* a = pf_menu->addAction(QString((ii > 0?"+%1":"%1")).arg(ii));
