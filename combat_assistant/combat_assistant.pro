@@ -18,7 +18,8 @@ SOURCES += main.cpp\
 		npcinsert.cpp \
     annotationinsert.cpp \
     monsterinsert.cpp \
-    utils.cpp
+    utils.cpp \
+    Logger.cpp
 
 HEADERS  += mainwindow.h \
 			pcinsert.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
 	AnnotationsModel.h \
 	txtDatabase.h \
     monsterinsert.h \
-    utils.h
+    utils.h \
+    Logger.h
 
 FORMS    += mainwindow.ui \
 			 pcinsert.ui \
@@ -39,8 +41,7 @@ FORMS    += mainwindow.ui \
 
 QMAKE_CXXFLAGS += -std=c++0x
 
-LIBS += -llua5.2 \
-		-lboost_regex
+LIBS += -llua5.2 -lboost_regex -lboost_date_time -lboost_chrono -lboost_system
 
 INCLUDEPATH += /usr/include/lua5.2/
 

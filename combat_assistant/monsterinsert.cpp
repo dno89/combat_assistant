@@ -71,3 +71,7 @@ void MonsterInsert::on_leRegex_textChanged(const QString &arg1) {
 int MonsterInsert::getQty() const {
     return ui->sbQty->value();
 }
+
+bool MonsterInsert::isSelected() const {
+    return ui->lvMonsters->selectionModel()->hasSelection();
+}

@@ -74,7 +74,7 @@ public:
     bool Remove(int index) {
         if(index >= 0 && index < m_initiative_list.size()) {
             m_initiative_list.erase(m_initiative_list.begin()+index);
-            emit dataChanged(createIndex(0, 0), createIndex(m_initiative_list.size()-1, 0));
+            Refresh(); //emit dataChanged(createIndex(0, 0), createIndex(m_initiative_list.size()-1, 0));
             return true;
         }
 
@@ -90,7 +90,7 @@ public:
         }
     }
     void Refresh() {
-        QModelIndex first = this->createIndex(0, 0, nullptr), last = this->createIndex(m_entry_lut.size()-1, 0, nullptr);
+        QModelIndex first = this->createIndex(0, 0, nullptr), last = this->createIndex(m_initiative_list.size()-1, 0, nullptr);
         emit dataChanged(first, last);
     }
 

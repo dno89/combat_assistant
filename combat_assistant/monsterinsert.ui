@@ -83,7 +83,11 @@
        </item>
       </layout>
      </widget>
-     <widget class="QListView" name="lvMonsters"/>
+     <widget class="QListView" name="lvMonsters">
+      <property name="layoutMode">
+       <enum>QListView::SinglePass</enum>
+      </property>
+     </widget>
      <widget class="QTextBrowser" name="tbDescription">
       <property name="tabChangesFocus">
        <bool>false</bool>

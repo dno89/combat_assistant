@@ -1,0 +1,84 @@
+/** BODY **/
+body { padding: 0 0 0 0;
+	background: url('/pathfinderRPG/prd/image/pageBackground.jpg');
+	background-repeat: repeat;
+	margin: 0;
+	border-width: 0px;
+    position: relative; }
+
+/** TEXT AND LINKS **/
+p.body {	line-height: 1.2em;
+			text-align: left; }
+h4 { margin-top: .1em;
+	margin-bottom: .1em;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 1em;
+	font-style: italic;
+	padding-left: 1em;
+	font-weight: normal;
+	text-indent: -1em;
+   	text-align: left; }
+
+h1 { font-size: 2.1em;
+	margin-bottom: 0.2em;
+	margin-top: 1.00em;
+	text-indent: 0.00em;
+	text-align: left;
+	font-weight: bold;
+	font-style: normal;
+	font-variant: small-caps;
+	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif; }
+	
+h2 { font-size: 1.5em;
+	margin-bottom: 0.2em;
+	margin-top: 1.00em;
+	text-indent: 0.00em;
+	margin-right: 0.00em;
+	margin-left: 0.00em;
+	text-align: left;
+	font-style: normal;
+	font-weight: bold;
+	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif; }
+
+h3 { font-size: 1em;
+	text-indent: 0;
+	padding-left: 0;
+	font-weight: normal;
+	font-family: Helvetica, Verdana, Geneva, sans-serif; }
+
+h5 { margin-top: .1em;
+	margin-bottom: .1em;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 1em;
+	padding-left: 1em;
+	font-weight: normal;
+	text-indent: -1em;
+   	text-align: left; }
+
+.heading { font-family: Verdana, Geneva, sans-serif;
+	font-size: 1.1em;
+	text-transform: uppercase;
+	background-color: black;
+	color: white;
+	padding: .25em .5em .25em .5em;
+	margin-bottom: .2em;
+	margin-top: 1.2em;
+	font-weight: bold; }
+.alignright { font-family: Verdana, Geneva, sans-serif;
+	font-size: 1.1em;
+	text-transform: uppercase;
+	color: black;
+	padding: .25em .5em .25em .5em;
+	margin-bottom: .2em;
+	margin-top: 1.2em;
+	font-weight: bold; }
+
+.alignleft { font-family: Verdana, Geneva, sans-serif;
+	font-size: 1.1em;
+	text-transform: uppercase;
+	background-color: black;
+	color: white;
+	padding: .25em .5em .25em .5em;
+	margin-bottom: .2em;
+	margin-top: 1.2em;
+	font-weight: bold; }

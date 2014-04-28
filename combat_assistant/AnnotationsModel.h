@@ -44,8 +44,10 @@ public:
         return QVariant();
     }
     void Refresh() {
-        QModelIndex first = this->createIndex(0, 0, nullptr), last = this->createIndex(m_annotations->size()-1, 0, nullptr);
-        emit dataChanged(first, last);
+        if(m_annotations) {
+            QModelIndex first = this->createIndex(0, 0, nullptr), last = this->createIndex(m_annotations->size()-1, 0, nullptr);
+            emit dataChanged(first, last);
+        }
     }
     void SetAnnotations(std::vector<Annotation>* model) {
         m_annotations = model;

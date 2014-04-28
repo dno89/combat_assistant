@@ -36,7 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_initiative_model(m_entry_lut, m_currentIndex), m_npcinsert_win(this),
-    m_monster_db("\t") //,
+    m_monster_db("\t") ,
+    INIT_LOGGER("/tmp/combat_assistant", true, "mainwindow", true)
 //    m_monster_insert_win(m_monster_db, this)
 {
     ui->setupUi(this);
@@ -63,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     //setup data/model
-    ui->lvCharacters->setModel(&m_initiative_model);
+    ui->lvInitiativeList->setModel(&m_initiative_model);
     ui->lvAnnotations->setModel(&m_annotations_model);
 
     //timer setup
@@ -71,14 +72,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&m_timeout, SIGNAL(timeout()), SLOT(timeoutTick()));
 
     //current item selection slot
-    connect(ui->lvCharacters->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(lvCharacters_currentChanged(const QModelIndex&,const QModelIndex&)));
+    connect(ui->lvInitiativeList->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(lvInitiativeList_currentChanged(const QModelIndex&,const QModelIndex&)));
 
 
     //charmenu setup
     MenuSetup();
     //custom menu
-    ui->lvCharacters->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->lvCharacters, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(ShowMenu(const QPoint&)));
+    ui->lvInitiativeList->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->lvInitiativeList, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(ShowMenu(const QPoint&)));
 
     m_currentIndex = 0;
 }
@@ -107,14 +108,42 @@ void MainWindow::readConf() {
         try {
             m_monster_db.loadDatabase(monster_db_fname.c_str());
             m_monster_labels = m_monster_db.getLabelMap();
-            m_enable_monster_db = true;
+            DPUSHC("Monster Database")
+            DTRACE(m_monster_db.getRecordCount())
+            for(auto& kv : m_monster_labels) {
+                LOGGER() << kv.first << ": " << kv.second;
+            }
+            DPOPC()
+            m_enable_monster = true;
         } catch (std::runtime_error& e) {
             std::cerr << "Something wrong happened reading monster database '" << monster_db_fname << "': " << e.what() << std::endl;
-            m_enable_monster_db = false;
+            m_enable_monster = false;
         }
     } else {
         std::cerr << "No monster_db in conf.lua: monster database not enabled" << std::endl;
-        m_enable_monster_db = false;
+        m_enable_monster = false;
+    }
+
+    //npc db
+    std::string npc_db_fname;
+    if(readFromConf("npc_db", &npc_db_fname)) {
+        try {
+            m_npc_db.loadDatabase(npc_db_fname.c_str());
+            m_npc_labels = m_npc_db.getLabelMap();
+            DPUSHC("NPC Database")
+            DTRACE(m_npc_db.getRecordCount())
+            for(auto& kv : m_npc_labels) {
+                LOGGER() << kv.first << ": " << kv.second;
+            }
+            DPOPC()
+            m_enable_npc = true;
+        } catch (std::runtime_error& e) {
+            std::cerr << "Something wrong happened reading npc database '" << monster_db_fname << "': " << e.what() << std::endl;
+            m_enable_npc = false;
+        }
+    } else {
+        std::cerr << "No npc_db in conf.lua: npc database not enabled" << std::endl;
+        m_enable_monster = false;
     }
 }
 
@@ -246,9 +275,9 @@ QString MainWindow::generateUName(const QString& name) {
 
 void MainWindow::on_pbUp_clicked()
 {
-    int index = ui->lvCharacters->currentIndex().row();
+    int index = ui->lvInitiativeList->currentIndex().row();
     if(m_initiative_model.Swap(index, index-1)) {
-        ui->lvCharacters->setCurrentIndex(m_initiative_model.index(index-1, 0));
+        ui->lvInitiativeList->setCurrentIndex(m_initiative_model.index(index-1, 0));
 
         //copy the initiative value
 
@@ -257,9 +286,9 @@ void MainWindow::on_pbUp_clicked()
 
 void MainWindow::on_pbUp_2_clicked()
 {
-    int index = ui->lvCharacters->currentIndex().row();
+    int index = ui->lvInitiativeList->currentIndex().row();
     if(m_initiative_model.Swap(index, index+1)) {
-        ui->lvCharacters->setCurrentIndex(m_initiative_model.index(index+1, 0));
+        ui->lvInitiativeList->setCurrentIndex(m_initiative_model.index(index+1, 0));
     }
 }
 
@@ -267,7 +296,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     //std::cerr << "Keyboard event" << std::endl;
     //std::cerr << event->key() << std::endl;
     if(event->key() == Qt::Key_Return) {
-        //int index = ui->lvCharacters->currentIndex().row();
+        //int index = ui->lvInitiativeList->currentIndex().row();
 
 //        std::cerr << "index: " << index << ", rowCount: " << m_initiative.rowCount() << std::endl;
 
@@ -287,17 +316,19 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void MainWindow::changeCurrentIndex(int new_index) {
+    if(m_initiative_model.rowCount() == 0) return;
+
     //update the current index annotations
     if(new_index != m_currentIndex) {
         updateAnnotations();
     }
     m_currentIndex = new_index;
-    ui->lvCharacters->setCurrentIndex(m_initiative_model.index(m_currentIndex, 0));
+    ui->lvInitiativeList->setCurrentIndex(m_initiative_model.index(m_currentIndex, 0));
     Display();
 
     //timer
-    HPEntry_PtrType hp = dynamic_pointer_cast<HPEntry>(m_entry_lut[getCurrentUName()]);
-    DescriptionEntry_PtrType desc = dynamic_pointer_cast<DescriptionEntry>(m_entry_lut[getCurrentUName()]);
+    HPEntry_PtrType hp = dynamic_pointer_cast<HPEntry>(m_entry_lut.at(getCurrentUName()));
+    DescriptionEntry_PtrType desc = dynamic_pointer_cast<DescriptionEntry>(m_entry_lut.at(getCurrentUName()));
 
     if(!(hp || desc)) {
         //start the timer
@@ -308,7 +339,7 @@ void MainWindow::changeCurrentIndex(int new_index) {
 }
 
 void MainWindow::updateAnnotations() {
-    for(auto it = m_entry_lut[m_initiative_model.GetUName(m_currentIndex)]->annotations.begin(); it != m_entry_lut[m_initiative_model.GetUName(m_currentIndex)]->annotations.end();) {
+    for(auto it = m_entry_lut.at(m_initiative_model.GetUName(m_currentIndex))->annotations.begin(); it != m_entry_lut.at(m_initiative_model.GetUName(m_currentIndex))->annotations.end();) {
         if(it->remaining_turns > 0) {
             --(it->remaining_turns);
             if(it->remaining_turns == 0) {
@@ -324,110 +355,33 @@ void MainWindow::updateAnnotations() {
 void MainWindow::on_pbRemove_clicked()
 {
     QString uname = getCurrentUName();
-    int index = ui->lvCharacters->currentIndex().row();
-    m_initiative_model.Remove(index);
-
-    if(index < m_currentIndex) {
-        changeCurrentIndex(m_currentIndex-1);
-    }
-
-    //add the removed char to the dead
     if(uname != QString("")) {
+        int index = ui->lvInitiativeList->currentIndex().row();
+        m_initiative_model.Remove(index);
+
+        if(index >= m_initiative_model.rowCount()) {
+            ui->lvInitiativeList->setCurrentIndex(m_initiative_model.index(m_initiative_model.rowCount()-1, 0));
+        }
+
+        if(m_initiative_model.rowCount() == 0) {
+            //empty model
+            m_currentIndex = -1;
+        } else if(index <= m_currentIndex) {
+            --m_currentIndex;
+        }
+
+
+        //add the removed char to the dead
         ui->lwDead->addItem(uname);
     }
 }
 
-//std::string MainWindow::DescribeNPC(const std::string& uname) const {
-//    using namespace std;
-
-//    assert(m_template_table.count(uname) || m_npc_table.count(uname));
-
-//    ostrstream out;
-
-//    if(m_template_table.count(uname)) {
-//        const template_npc& n = m_template_table.at(uname);
-
-//        const char* title = "===========[ LIVELLO / TAGLIA / DV ]===========";
-//        out << title << endl;
-//        out << "Tag:\t" << n.TAG << endl;
-//        out << "Liv:\t" << n.LIV << endl;
-//        out << "DV:\t" << "d" << n.DV << endl;
-//        //out << string(strlen(title), '=');
-//        title = "===========[ PF / INIZIATIVA / CA ]===========";
-//        out << title << endl;
-//        out << "PF:\t" << n.remaining_PF << " / " << n.PF << endl;
-//        out << "INIZ:\t" << showpos << n.INIZ << noshowpos << " (" << n.INIZ_val << ")" << endl;
-//        out << "CA:\t" << n.CA << endl;
-//        title = "===========[ CARATTERISTICHE ]===========";
-//        out << title << endl;
-//        out << noshowpos << "FOR:\t" << n.FOR << "\t| " << showpos << n.FOR_mod << endl;
-//        out << noshowpos << "DES:\t" << n.DES << "\t| " << showpos << n.DES_mod << endl;
-//        out << noshowpos << "COS:\t" << n.COS << "\t| " << showpos << n.COS_mod << endl;
-//        out << noshowpos << "INT:\t" << n.INT << "\t| " << showpos << n.INT_mod << endl;
-//        out << noshowpos << "SAG:\t" << n.SAG << "\t| " << showpos << n.SAG_mod << endl;
-//        out << noshowpos << "CAR:\t" << n.CAR << "\t| " << showpos << n.CAR_mod << endl << noshowpos;
-//        title = "===========[ TIRI SALVEZZA ]===========";
-//        out << title << endl;
-//        out << "TEM:\t" << showpos << n.TEM << endl;
-//        out << "RIF:\t" << n.RIF << endl;
-//        out << "VOL:\t" << n.VOL << endl;
-//        title = "===========[ COMBATTIMENTO ]===========";
-//        out << title << endl;
-//        out << "BAB:\t" << n.BAB << endl;
-//        out << "BMC:\t" << n.BMC << endl;
-//        out << "DMC:\t" << n.DMC << endl;
-//        title = "===========[ MISCHIA ]===========";
-//        out << title << endl;
-//        out << n.A_MIS.NAME << ":\t" << n.MIS.TPC << " (" << n.MIS.DAN << ", " << n.A_MIS.CRI <<")" << endl;
-//        title = "===========[ DISTANZA ]===========";
-//        out << title << endl;
-//        out << n.A_DIS.NAME << ":\t" << n.DIS.TPC << " (" << n.DIS.DAN << ", " << n.A_DIS.CRI << ")" << endl;
-//        title = "===========[ ARMATURA / SCUDO ]===========";
-//        out << title << endl;
-//        out << n.ARM.NAME << ":\t" << showpos << n.ARM.BONUS << " CA, " << n.ARM.PEN << " pen, ";
-//        if(n.ARM.DES_MAX > 0) {
-//            out << n.ARM.DES_MAX << " DES max";
-//        } out << endl;
-//        out << n.SCU.NAME << ":\t" << showpos << n.SCU.BONUS << " CA, " << n.SCU.PEN << " pen, ";
-//        if(n.SCU.DES_MAX > 0) {
-//            out << n.SCU.DES_MAX << " DES max";
-//        } out << endl;
-//        title = "===========[ TALENTI ]===========";
-//        out << title << endl;
-//        for(auto t : n.TAL) {
-//            out << " > " << t << endl;
-//        }
-//        title = "===========[ MONETE ]===========";
-//        out << title << endl;
-//        out << noshowpos << "mp:\t" << n.MON.MP << endl;
-//        out << "mo:\t" << n.MON.MO << endl;
-//        out << "ma:\t" << n.MON.MA << endl;
-//        out << "mr:\t" << n.MON.MR << endl;
-//        title = "===========[ OGGETTI ]===========";
-//        out << title << endl;
-//        for(auto t : n.OGG) {
-//            out << " - " << t << endl;
-//        }
-//        //out << string(strlen(title), '=');
-
-//        out << '\0';
-//    } else {
-//        const npc& n = m_npc_table.at(uname);
-
-//        const char* title = "===========[ GENERIC NPC ]===========";
-//        out << title << endl;
-//        out << "PF:\t" << n.remaining_PF << " / " << n.PF << endl;
-//        out << "INIZ:\t" << noshowpos << " (" << n.INIZ_val << ")" << endl;
-//        out << '\0';
-//    }
-
-//    return out.str();
-//}
-
 QString MainWindow::DescribeEntry(const QString& uname) const {
     using namespace std;
 
-    assert(m_entry_lut.count(uname));
+    if(!m_entry_lut.count(uname)) {
+        return QString("");
+    }
 
     BaseEntry_PtrType baseentry = m_entry_lut.at(uname);
     CustomNPC_PtrType cnpc;
@@ -461,7 +415,7 @@ QString MainWindow::DescribeEntry(const QString& uname) const {
     return QString("");
 }
 
-void MainWindow::lvCharacters_currentChanged(const QModelIndex& cur, const QModelIndex& prev) {
+void MainWindow::lvInitiativeList_currentChanged(const QModelIndex& cur, const QModelIndex& prev) {
     int index = cur.row();
 
 //    std::string str = m_initiative.GetUName(index).toStdString();
@@ -478,11 +432,13 @@ void MainWindow::Display(const QString &uname) {
 }
 
 void MainWindow::DisplayAnnotations(const QString& uname) {
-    m_annotations_model.SetAnnotations(&m_entry_lut[uname]->annotations);
+    if(m_entry_lut.count(uname)) {
+        m_annotations_model.SetAnnotations(&m_entry_lut.at(uname)->annotations);
+    }
 }
 
 void MainWindow::Display() {
-    Display(ui->lvCharacters->currentIndex().row());
+    Display(ui->lvInitiativeList->currentIndex().row());
 }
 
 void MainWindow::Display(int index) {
@@ -537,13 +493,13 @@ void MainWindow::on_actionAdd_PC_triggered()
     //grabKeyboard();
 }
 
-void MainWindow::on_lvCharacters_clicked(const QModelIndex &index)
+void MainWindow::on_lvInitiativeList_clicked(const QModelIndex &index)
 {
-    lvCharacters_currentChanged(index, index);
+    lvInitiativeList_currentChanged(index, index);
 }
 
 void MainWindow::ShowMenu(const QPoint& p) {
-    m_charMenu.exec(ui->lvCharacters->mapToGlobal(p));
+    m_charMenu.exec(ui->lvInitiativeList->mapToGlobal(p));
 }
 
 void MainWindow::MenuSetup() {
@@ -579,7 +535,7 @@ void MainWindow::insertCustomAnnotation() {
         ann.remaining_turns = aiwin.getDuration();
         ann.ico = ":/res/ico/default_annotation";
 
-        m_entry_lut[uname]->annotations.push_back(ann);
+        m_entry_lut.at(uname)->annotations.push_back(ann);
 
         Display();
     }
@@ -596,14 +552,14 @@ void MainWindow::change_pf() {
 }
 
 void MainWindow::ChangePF(int val) {
-    int index = ui->lvCharacters->currentIndex().row();
+    int index = ui->lvInitiativeList->currentIndex().row();
     QString uname = m_initiative_model.GetUName(index);
 
-    HPEntry_PtrType hpp = dynamic_pointer_cast<HPEntry>(m_entry_lut[uname]);
+    HPEntry_PtrType hpp = dynamic_pointer_cast<HPEntry>(m_entry_lut.at(uname));
 
     if(hpp) {
         hpp->remaining_hp += val;
-        lvCharacters_currentChanged(m_initiative_model.index(index), m_initiative_model.index(index));
+        lvInitiativeList_currentChanged(m_initiative_model.index(index), m_initiative_model.index(index));
     }
 }
 
@@ -618,10 +574,33 @@ void MainWindow::on_lwDead_clicked(const QModelIndex &index)
 }
 
 void MainWindow::on_actionAdd_NPC_triggered() {
+    if(m_enable_npc) {
+        ///add npc
+        MonsterInsert mi_win(m_npc_db, this);
+        if(mi_win.exec() != QDialog::Rejected && mi_win.isSelected()) {
+            //get the record
+            txtDatabase::RecordType r = mi_win.getSelectedMonster();
+            int rep = mi_win.getQty();
+            for(int ii = 0; ii < rep; ++ii) {
+                NPC_PtrType m = std::make_shared<Monster>();
+                //set m field
+                m->name = generateUName(QString::fromStdString(r[m_npc_labels.at("Name")]));
+                std::string descr = r[m_npc_labels.at("FullText")];
+                //the initiative
+                m->initiative = d20(eng)+std::stoi(r[m_npc_labels.at("Init")]);
+                //pf
+                m->total_hp = generatePF(processHP(r[m_npc_labels.at("HD")]));
+                m->remaining_hp = m->total_hp;
+                //description
+                m->description = QString::fromStdString(descr);
 
+                AddEntry(m->name, m);
+            }
+        }
+    }
 }
 
-void MainWindow::on_lvCharacters_doubleClicked(const QModelIndex &index)
+void MainWindow::on_lvInitiativeList_doubleClicked(const QModelIndex &index)
 {
     changeCurrentIndex(index.row());
 //    m_currentIndex = ;
@@ -679,7 +658,7 @@ void MainWindow::on_actionAdd_Custom_NPC_triggered()
 }
 
 QString MainWindow::getCurrentUName() const {
-    return m_initiative_model.GetUName(ui->lvCharacters->currentIndex().row());
+    return m_initiative_model.GetUName(ui->lvInitiativeList->currentIndex().row());
 }
 
 void MainWindow::timeoutTick() {
@@ -697,10 +676,10 @@ void MainWindow::timeoutTick() {
 
 
 void MainWindow::on_actionAdd_Monster_triggered() {
-    if(m_enable_monster_db) {
+    if(m_enable_monster) {
         ///add monster
         MonsterInsert mi_win(m_monster_db, this);
-        if(mi_win.exec() != QDialog::Rejected) {
+        if(mi_win.exec() != QDialog::Rejected && mi_win.isSelected()) {
             //get the record
             txtDatabase::RecordType r = mi_win.getSelectedMonster();
             int rep = mi_win.getQty();
@@ -720,7 +699,5 @@ void MainWindow::on_actionAdd_Monster_triggered() {
                 AddEntry(m->name, m);
             }
         }
-//        if(m_monster_insert_win.exec() != QDialog::Rejected) {
-//        }
     }
 }

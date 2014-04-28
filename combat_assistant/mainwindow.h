@@ -27,6 +27,7 @@
 #include <AnnotationsModel.h>
 //others
 #include "txtDatabase.h"
+#include "Logger.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,7 +52,7 @@ private slots:
 
     void on_actionAdd_PC_triggered();
 
-    void on_lvCharacters_clicked(const QModelIndex &index);
+    void on_lvInitiativeList_clicked(const QModelIndex &index);
 
     //menu show
     void ShowMenu(const QPoint& p);
@@ -66,14 +67,14 @@ private slots:
 
     void on_actionAdd_NPC_triggered();
 
-    void on_lvCharacters_doubleClicked(const QModelIndex &index);
+    void on_lvInitiativeList_doubleClicked(const QModelIndex &index);
 
     void on_actionAdd_Custom_NPC_triggered();
 
     void on_actionAdd_Monster_triggered();
 
 public slots:
-    void lvCharacters_currentChanged(const QModelIndex &cur, const QModelIndex &prev);
+    void lvInitiativeList_currentChanged(const QModelIndex &cur, const QModelIndex &prev);
     void timeoutTick();
 
 private:
@@ -110,9 +111,16 @@ private:
     double m_playerReactionTime;
 
     //monster db
-    bool m_enable_monster_db;
+    bool m_enable_monster;
     txtDatabase m_monster_db;
     txtDatabase::LabelMapType m_monster_labels;
+    //npc db
+    bool m_enable_npc;
+    txtDatabase m_npc_db;
+    txtDatabase::LabelMapType m_npc_labels;
+
+    ///logger
+    DECLARE_LOGGER()
 
     ///my functions
     //generate unique name
@@ -123,7 +131,7 @@ private:
     void ChangePF(int val);
     void Display(const QString& uname);
     void Display(int index);
-    //default: display the current selection from lvCharacters
+    //default: display the current selection from lvInitiativeList
     void Display();
     void DisplayDescription(const QString& uname);
     void DisplayAnnotations(const QString& uname);

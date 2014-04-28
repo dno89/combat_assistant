@@ -108,7 +108,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QListView" name="lvCharacters">
+            <widget class="QListView" name="lvInitiativeList">
              <property name="minimumSize">
               <size>
                <width>0</width>
