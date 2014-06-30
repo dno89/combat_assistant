@@ -22,7 +22,11 @@ MonsterInsert::MonsterInsert(const txtDatabase& db, QWidget *parent) :
     connect(ui->lvMonsters->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(lvMonster_currentChanged(const QModelIndex&,const QModelIndex&)));
 
     //start with all monsters
-    m_filtered_model.setDatabase(m_db.getDatabase());
+    txtDatabase::DatabaseType db2 = m_db.getDatabase();
+    txtDatabase::LabelMapType lbl = m_db.getLabelMap();
+
+    SortTxtDB(db2, lbl, "Name");
+    m_filtered_model.setDatabase(db2);
 }
 
 void MonsterInsert::lvMonster_currentChanged(const QModelIndex &cur, const QModelIndex &prev) {
@@ -63,8 +67,11 @@ void MonsterInsert::on_leRegex_returnPressed() {
 
 void MonsterInsert::on_leRegex_textChanged(const QString &arg1) {
     boost::regex r(arg1.toStdString(), (!ui->cbCaseSensitive->isChecked())?boost::regex::icase:0 | boost::regex::extended);
-
-    m_filtered_model.setDatabase(m_db.filter("Name", r));
+    txtDatabase::DatabaseType db = m_db.filter("Name", r);
+    SortTxtDB(db, m_db.getLabelMap(), "Name");
+//    txtDatabase::LabelMapType lbl = m_db.getLabelMap();
+//    std::sort(db.begin(), db.end(), [&lbl](txtDatabase::DatabaseType::const_reference e1, txtDatabase::DatabaseType::const_reference e2){return stod(e1[lbl["CR"]]) < stod(e2[lbl["CR"]]);});
+    m_filtered_model.setDatabase(db);
 
 }
 
@@ -74,4 +81,8 @@ int MonsterInsert::getQty() const {
 
 bool MonsterInsert::isSelected() const {
     return ui->lvMonsters->selectionModel()->hasSelection();
+}
+
+void MonsterInsert::on_cbCaseSensitive_clicked() {
+    on_leRegex_textChanged(ui->leRegex->text());
 }

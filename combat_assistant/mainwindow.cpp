@@ -75,11 +75,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->lvInitiativeList->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(lvInitiativeList_currentChanged(const QModelIndex&,const QModelIndex&)));
 
 
-    //charmenu setup
+    //menu setup
     MenuSetup();
     //custom menu
     ui->lvInitiativeList->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->lvInitiativeList, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(ShowMenu(const QPoint&)));
+    connect(ui->lvInitiativeList, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(ShowCharMenu(const QPoint&)));
+
+    ui->lvAnnotations->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->lvAnnotations, SIGNAL(customContextMenuRequested(QPoint)), SLOT(ShowAnnotationMenu(QPoint)));
 
     m_currentIndex = 0;
 }
@@ -335,6 +338,10 @@ void MainWindow::changeCurrentIndex(int new_index) {
         m_spareTime = m_playerReactionTime*1000;
         ui->lcdTimeout->setStyleSheet("");
         m_timeout.start();
+    } else {
+        m_timeout.stop();
+        ui->lcdTimeout->setStyleSheet("");
+        ui->lcdTimeout->display(0.0);
     }
 }
 
@@ -489,8 +496,6 @@ void MainWindow::on_actionAdd_PC_triggered()
     }
     win.hide();
     //win.close();
-
-    //grabKeyboard();
 }
 
 void MainWindow::on_lvInitiativeList_clicked(const QModelIndex &index)
@@ -498,11 +503,16 @@ void MainWindow::on_lvInitiativeList_clicked(const QModelIndex &index)
     lvInitiativeList_currentChanged(index, index);
 }
 
-void MainWindow::ShowMenu(const QPoint& p) {
+void MainWindow::ShowCharMenu(const QPoint& p) {
     m_charMenu.exec(ui->lvInitiativeList->mapToGlobal(p));
 }
 
+void MainWindow::ShowAnnotationMenu(const QPoint& p) {
+    m_annotationMenu.exec(ui->lvAnnotations->mapToGlobal(p));
+}
+
 void MainWindow::MenuSetup() {
+    //CHAR MENU
     //HP manipulation
     QMenu* pf_menu = new QMenu("HP", this);
     for(int ii = -60; ii <= +30; ++ii) {
@@ -522,6 +532,31 @@ void MainWindow::MenuSetup() {
     }
     m_charMenu.addMenu(ann_menu);
 
+    //ANNOTATION MENU
+    QAction* delete_ann = m_annotationMenu.addAction("delete");
+    connect(delete_ann, SIGNAL(triggered()), SLOT(removeAnnotation()));
+}
+
+void MainWindow::removeAnnotation() {
+    BaseEntry_PtrType ce = getCurrentEntry();
+
+    if(!ce) {return;}
+
+    QItemSelectionModel* ann_selected = ui->lvAnnotations->selectionModel();
+    int row = ann_selected->currentIndex().row();
+    if(row >= 0 && row < ce->annotations.size()) {
+        //delete the annotation
+        ce->annotations.erase(ce->annotations.begin()+row);
+        m_annotations_model.Refresh();
+    }
+}
+
+BaseEntry_PtrType MainWindow::getCurrentEntry() {
+    if(m_entry_lut.count(getCurrentUName())) {
+        return m_entry_lut[getCurrentUName()];
+    } else {
+        return NULL;
+    }
 }
 
 void MainWindow::insertCustomAnnotation() {

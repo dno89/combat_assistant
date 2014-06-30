@@ -1,4 +1,5 @@
 #include <boost/regex.hpp>
+#include <algorithm>
 #include "utils.h"
 
 //global functions
@@ -17,4 +18,8 @@ int extractInit(const std::string& str) {
     boost::regex_search(str, res, r);
 
     return stoi(res[1]);
+}
+void SortTxtDB(txtDatabase::DatabaseType& db, txtDatabase::LabelMapType lbl, std::string key, bool integer) {
+    assert(integer == false && "Integer = true not yet implemented!");
+    std::sort(db.begin(), db.end(), [&](txtDatabase::DatabaseType::const_reference e1, txtDatabase::DatabaseType::const_reference e2){return e1[lbl[key]] < e2[lbl[key]];});
 }

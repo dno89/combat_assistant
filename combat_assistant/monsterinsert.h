@@ -75,6 +75,8 @@ private slots:
 
     void on_leRegex_textChanged(const QString &arg1);
 
+    void on_cbCaseSensitive_clicked();
+
 private:
     Ui::MonsterInsert *ui;
     const txtDatabase& m_db;

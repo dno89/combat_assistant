@@ -55,7 +55,10 @@ private slots:
     void on_lvInitiativeList_clicked(const QModelIndex &index);
 
     //menu show
-    void ShowMenu(const QPoint& p);
+    void ShowCharMenu(const QPoint& p);
+    void ShowAnnotationMenu(const QPoint& p);
+
+    void removeAnnotation();
 
     void change_pf();
 
@@ -72,7 +75,6 @@ private slots:
     void on_actionAdd_Custom_NPC_triggered();
 
     void on_actionAdd_Monster_triggered();
-
 public slots:
     void lvInitiativeList_currentChanged(const QModelIndex &cur, const QModelIndex &prev);
     void timeoutTick();
@@ -97,6 +99,7 @@ private:
 
     //context menu
     QMenu m_charMenu;
+    QMenu m_annotationMenu;
 
     //insert windows
     npcinsert m_npcinsert_win;
@@ -153,6 +156,7 @@ private:
     bool readFromConf(const char* name, double* out_val);
     bool readFromConf(const char* name, std::string* out_val);
     int generatePF(const std::string& str);
+    BaseEntry_PtrType getCurrentEntry();
 };
 
 #endif // MAINWINDOW_H
