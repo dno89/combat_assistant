@@ -46,8 +46,10 @@ public:
         return QVariant();
     }
     void AddInitiativeEntry(const QString& name) {
+        beginInsertRows(QModelIndex(), m_initiative_list.size(), m_initiative_list.size());
         m_initiative_list.push_back(name);
         Sort();
+        endInsertRows();
         //notify data change
         emit dataChanged(createIndex(0, 0), createIndex(m_initiative_list.size()-1, 0));
     }
@@ -63,7 +65,6 @@ public:
             int new_initiative = findInitiative(i2);
 
             findInitiative(i1) = new_initiative;
-
             std::swap(m_initiative_list[i1], m_initiative_list[i2]);
             emit dataChanged(createIndex(0, 0), createIndex(m_initiative_list.size()-1, 0));
             return true;
@@ -73,7 +74,9 @@ public:
     }
     bool Remove(int index) {
         if(index >= 0 && index < m_initiative_list.size()) {
+            beginRemoveColumns(QModelIndex(), index, index);
             m_initiative_list.erase(m_initiative_list.begin()+index);
+            endRemoveColumns();
             Refresh(); //emit dataChanged(createIndex(0, 0), createIndex(m_initiative_list.size()-1, 0));
             return true;
         }

@@ -3,7 +3,7 @@
 #include "utils.h"
 
 //global functions
-std::string processHP(const std::string& str) {
+std::string preprocessDice(const std::string& str) {
         boost::regex r("([[:digit:]]+)d([[:digit:]]+)");
         return regex_replace(str, r, "d(\\2, \\1)");
 }

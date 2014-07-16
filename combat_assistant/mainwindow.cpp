@@ -515,7 +515,7 @@ void MainWindow::MenuSetup() {
     //CHAR MENU
     //HP manipulation
     QMenu* pf_menu = new QMenu("HP", this);
-    for(int ii = -60; ii <= +30; ++ii) {
+    for(int ii = -120; ii <= +30; ++ii) {
         if(ii == 0) continue;
 
         QAction* a = pf_menu->addAction(QString((ii > 0?"+%1":"%1")).arg(ii));
@@ -546,8 +546,7 @@ void MainWindow::removeAnnotation() {
     int row = ann_selected->currentIndex().row();
     if(row >= 0 && row < ce->annotations.size()) {
         //delete the annotation
-        ce->annotations.erase(ce->annotations.begin()+row);
-        m_annotations_model.Refresh();
+        m_annotations_model.eraseAnnotation(row);
     }
 }
 
@@ -624,7 +623,7 @@ void MainWindow::on_actionAdd_NPC_triggered() {
                 //the initiative
                 m->initiative = d20(eng)+std::stoi(r[m_npc_labels.at("Init")]);
                 //pf
-                m->total_hp = generatePF(processHP(r[m_npc_labels.at("HD")]));
+                m->total_hp = generateDice(r[m_npc_labels.at("HD")]);
                 m->remaining_hp = m->total_hp;
                 //description
                 m->description = QString::fromStdString(descr);
@@ -642,8 +641,8 @@ void MainWindow::on_lvInitiativeList_doubleClicked(const QModelIndex &index)
 //    m_initiative_model.Refresh();
 }
 
-int MainWindow::generatePF(const string &str) {
-    std::string f = "PF = " + str;
+int MainWindow::generateDice(const string &str) {
+    std::string f = "PF = " + preprocessDice(str);
     int PF;
     if(luaL_loadstring(m_L, f.c_str()) || lua_pcall(m_L, 0, 0, 0)) {
         std::cerr << "Error while executing PF script" << std::endl;
@@ -683,7 +682,7 @@ void MainWindow::on_actionAdd_Custom_NPC_triggered()
         //set the name and the initiative
         cnpc->name = name;
         cnpc->initiative = init;
-        cnpc->total_hp = generatePF(processHP(m_npcinsert_win.GetPF()));
+        cnpc->total_hp = generateDice(m_npcinsert_win.GetPF());
         cnpc->remaining_hp = cnpc->total_hp;
 
         AddEntry(name, cnpc);
@@ -726,7 +725,7 @@ void MainWindow::on_actionAdd_Monster_triggered() {
                 //the initiative
                 m->initiative = d20(eng)+extractInit(descr);
                 //pf
-                m->total_hp = generatePF(processHP(r[m_monster_labels.at("HD")]));
+                m->total_hp = generateDice(r[m_monster_labels.at("HD")]);
                 m->remaining_hp = m->total_hp;
                 //description
                 m->description = QString::fromStdString(descr);

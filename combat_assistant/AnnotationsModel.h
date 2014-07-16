@@ -50,10 +50,30 @@ public:
         }
     }
     void SetAnnotations(std::vector<Annotation>* model) {
+        int old_size;
+        if(m_annotations) {
+            old_size = m_annotations->size();
+        } else {
+            old_size = 0;
+        }
+        beginRemoveRows(QModelIndex(), 0, old_size);
         m_annotations = model;
+        endRemoveRows();
+        Refresh();
+    }
+    void eraseAnnotation(unsigned int index) {
+        if(index >= m_annotations->size()) {
+            throw std::runtime_error("AnnotationsModel::eraseAnnotation ERROR: index out of bound!");
+        }
+
+        beginRemoveRows(QModelIndex(), index, index);
+        m_annotations->erase(m_annotations->begin()+index);
+        endRemoveRows();
+
         Refresh();
     }
 
+    ///TODO: implement a mechanism to use beginRemoveRow
 
 private:
     ////data

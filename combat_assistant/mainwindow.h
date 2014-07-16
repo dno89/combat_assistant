@@ -155,7 +155,7 @@ private:
     void updateAnnotations();
     bool readFromConf(const char* name, double* out_val);
     bool readFromConf(const char* name, std::string* out_val);
-    int generatePF(const std::string& str);
+    int generateDice(const std::string& str);
     BaseEntry_PtrType getCurrentEntry();
 };
 
