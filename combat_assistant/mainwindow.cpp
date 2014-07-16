@@ -36,7 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_initiative_model(m_entry_lut, m_currentIndex), m_npcinsert_win(this),
-    m_monster_db("\t") ,
+    m_monster_db("\t"),
+    m_diceroll_win(this),
     INIT_LOGGER("/tmp/combat_assistant", true, "mainwindow", true)
 //    m_monster_insert_win(m_monster_db, this)
 {
@@ -647,7 +648,7 @@ int MainWindow::generateDice(const string &str) {
     if(luaL_loadstring(m_L, f.c_str()) || lua_pcall(m_L, 0, 0, 0)) {
         std::cerr << "Error while executing PF script" << std::endl;
         std::cerr << lua_tostring(m_L, -1) << std::endl;
-        PF = 0;
+        PF = std::numeric_limits<int>::min();
     } else {
         //get the global value of PF
         lua_getglobal(m_L, "PF");
@@ -734,4 +735,17 @@ void MainWindow::on_actionAdd_Monster_triggered() {
             }
         }
     }
+}
+
+void MainWindow::on_actionRoll_DIce_triggered()
+{
+    if(m_diceroll_win.exec() != QDialog::Rejected) {
+        int result = generateDice(m_diceroll_win.getDiceText().toStdString());
+
+        logText(QString("%1 --> %2\n").arg(m_diceroll_win.getDiceText()).arg(result));
+    }
+}
+
+void MainWindow::logText(QString str) {
+    ui->tbLog->setPlainText(ui->tbLog->toPlainText() + str);
 }

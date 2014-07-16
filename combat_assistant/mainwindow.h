@@ -20,6 +20,7 @@
 #include "npcinsert.h"
 #include "pcinsert.h"
 #include "monsterinsert.h"
+#include "diceroll.h"
 //struct
 #include "structs.h"
 //models
@@ -75,6 +76,8 @@ private slots:
     void on_actionAdd_Custom_NPC_triggered();
 
     void on_actionAdd_Monster_triggered();
+    void on_actionRoll_DIce_triggered();
+
 public slots:
     void lvInitiativeList_currentChanged(const QModelIndex &cur, const QModelIndex &prev);
     void timeoutTick();
@@ -122,6 +125,9 @@ private:
     txtDatabase m_npc_db;
     txtDatabase::LabelMapType m_npc_labels;
 
+    //dice utility
+    DiceRoll m_diceroll_win;
+
     ///logger
     DECLARE_LOGGER()
 
@@ -157,6 +163,7 @@ private:
     bool readFromConf(const char* name, std::string* out_val);
     int generateDice(const std::string& str);
     BaseEntry_PtrType getCurrentEntry();
+    void logText(QString str);
 };
 
 #endif // MAINWINDOW_H

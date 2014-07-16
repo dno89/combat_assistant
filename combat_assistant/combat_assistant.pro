@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     annotationinsert.cpp \
     monsterinsert.cpp \
     utils.cpp \
-    Logger.cpp
+    Logger.cpp \
+    diceroll.cpp
 
 HEADERS  += mainwindow.h \
 			pcinsert.h \
@@ -31,13 +32,15 @@ HEADERS  += mainwindow.h \
 	txtDatabase.h \
     monsterinsert.h \
     utils.h \
-    Logger.h
+    Logger.h \
+    diceroll.h
 
 FORMS    += mainwindow.ui \
 			 pcinsert.ui \
 			 npcinsert.ui \
     annotationinsert.ui \
-    monsterinsert.ui
+    monsterinsert.ui \
+    diceroll.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
 

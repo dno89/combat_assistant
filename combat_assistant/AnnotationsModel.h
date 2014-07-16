@@ -73,8 +73,6 @@ public:
         Refresh();
     }
 
-    ///TODO: implement a mechanism to use beginRemoveRow
-
 private:
     ////data
     std::vector<Annotation>* m_annotations = nullptr;

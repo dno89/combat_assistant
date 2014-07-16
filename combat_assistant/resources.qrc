@@ -16,5 +16,6 @@
         <file alias="/ico/battle2">res/ico/battle2.jpg</file>
         <file alias="/ico/current">res/ico/CURRENT.png</file>
         <file alias="/ico/default_annotation">res/ico/book-open.png</file>
+        <file alias="/ico/dice">res/ico/dice.png</file>
     </qresource>
 </RCC>
