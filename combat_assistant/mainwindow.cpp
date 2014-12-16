@@ -536,6 +536,8 @@ void MainWindow::MenuSetup() {
     //ANNOTATION MENU
     QAction* delete_ann = m_annotationMenu.addAction("delete");
     connect(delete_ann, SIGNAL(triggered()), SLOT(removeAnnotation()));
+    QAction* edit_ann = m_annotationMenu.addAction("edit");
+    connect(edit_ann, SIGNAL(triggered()), SLOT(editAnnotation()));
 }
 
 void MainWindow::removeAnnotation() {
@@ -548,6 +550,26 @@ void MainWindow::removeAnnotation() {
     if(row >= 0 && row < ce->annotations.size()) {
         //delete the annotation
         m_annotations_model.eraseAnnotation(row);
+    }
+}
+
+void MainWindow::editAnnotation() {
+    BaseEntry_PtrType ce = getCurrentEntry();
+
+    if(!ce) {return;}
+
+    QItemSelectionModel* ann_selected = ui->lvAnnotations->selectionModel();
+    int row = ann_selected->currentIndex().row();
+    if(row >= 0 && row < ce->annotations.size()) {
+        //open the dialog
+        AnnotationInsert aiwin(this, ce->annotations[row].text, ce->annotations[row].remaining_turns);
+
+        if(aiwin.exec() != QDialog::Rejected) {
+            ce->annotations[row].text = aiwin.getDescription();
+            ce->annotations[row].remaining_turns = aiwin.getDuration();
+
+//            Display();
+        }
     }
 }
 

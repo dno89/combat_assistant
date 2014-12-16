@@ -60,6 +60,7 @@ private slots:
     void ShowAnnotationMenu(const QPoint& p);
 
     void removeAnnotation();
+    void editAnnotation();
 
     void change_pf();
 

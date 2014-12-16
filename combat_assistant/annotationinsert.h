@@ -12,7 +12,7 @@ class AnnotationInsert : public QDialog
     Q_OBJECT
 
 public:
-    explicit AnnotationInsert(QWidget *parent = 0);
+    explicit AnnotationInsert(QWidget *parent = 0, QString default_name = "", int default_duration = 0);
     ~AnnotationInsert();
 
     ///My functions
